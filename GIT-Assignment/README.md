@@ -3,6 +3,7 @@ This folder contains the Git Assignment, including necessary documentation, samp
 📂 Folder Structure
 
 GIT-Assignment/
+
 │-- README.md                   # Assignment documentation  
 │-- file.txt                    # Sample file used in the assignment  
 │-- GIT-Saksham_Gupta.pdf       # PDF file containing screenshots of commands and corresponding changes  
