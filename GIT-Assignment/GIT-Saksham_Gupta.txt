@@ -1,0 +1,100 @@
+1. Create a New Repository.
+- PS G:\Saksham\Code> git init Assignment-repo
+  Initialized empty Git repository in G:/Saksham/Code/Assignment-repo/.git/
+  PS G:\Saksham\Code> git config --global user.email "saksham.gupta.2507@gmail.com"
+  PS G:\Saksham\Code> git config --global user.name "Saksham-Gupta-257"
+
+2. Create a new file.
+- PS G:\Saksham\Code> cd Assignment-repo
+  PS G:\Saksham\Code\Assignment-repo> echo "Created a new file for Question 2 of git Assignment" >file.txt 
+  PS G:\Saksham\Code\Assignment-repo> git add file.txt
+  PS G:\Saksham\Code\Assignment-repo> git commit -m "Added a new file"
+  [master (root-commit) c8bae01] Added a new file
+   1 file changed, 0 insertions(+), 0 deletions(-)
+   create mode 100644 file.txt
+
+3. Create a Branch.
+- PS G:\Saksham\Code\Assignment-repo> git branch test-branch
+
+4. Make Changes in the New Branch.
+- PS G:\Saksham\Code\Assignment-repo> git checkout test-branch
+  Switched to branch 'test-branch'
+  PS G:\Saksham\Code\Assignment-repo> echo "Some changes in file through test-branch" >>file.txt
+  PS G:\Saksham\Code\Assignment-repo> git add file.txt
+  PS G:\Saksham\Code\Assignment-repo> git commit -m "Updated file.txt with test-branch"
+  [test-branch e868fb2] Updated file.txt with test-branch
+   1 file changed, 0 insertions(+), 0 deletions(-)
+
+5.Create Another Branch (Optional).
+- PS G:\Saksham\Code\Assignment-repo> git branch optional-branch
+
+6. Merge Branches.
+- PS G:\Saksham\Code\Assignment-repo> git checkout master
+  Switched to branch 'master'
+  PS G:\Saksham\Code\Assignment-repo> git merge test-branch
+  Updating c8bae01..e868fb2
+  Fast-forward
+   file.txt | Bin 108 -> 192 bytes
+   1 file changed, 0 insertions(+), 0 deletions(-)
+
+7. Pull Changes from Remote.
+- PS G:\Saksham\Code\Assignment-repo> git pull origin master
+  remote: Enumerating objects: 5, done.
+  remote: Counting objects: 100% (5/5), done.
+  remote: Compressing objects: 100% (2/2), done.
+  remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+  Unpacking objects: 100% (3/3), 1.00 KiB | 1024 bytes/s, done.
+  From https://github.com/Saksham-Gupta-257/Assignment-repo
+   * branch            master     -> FETCH_HEAD
+     e868fb2..8aac277  master     -> origin/master
+  Updating e868fb2..8aac277
+  Fast-forward
+   file.txt | Bin 192 -> 158 bytes
+   1 file changed, 0 insertions(+), 0 deletions(-)
+
+8. View Git Log and History.
+- PS G:\Saksham\Code\Assignment-repo> git log --oneline --graph --all
+  * 8aac277 (HEAD -> master, origin/master) Changes Made Remotely
+  * e868fb2 (test-branch, optional-branch) Updated file.txt with test-branch
+  * c8bae01 Added a new file
+
+9. Git Status and Staging.
+- Git Status
+  PS G:\Saksham\Code\Assignment-repo> echo "Changes for git stauts,staging,revert,reset commands" >>file.txt       
+  PS G:\Saksham\Code\Assignment-repo> git status
+  On branch master
+  Your branch is up to date with 'origin/master'.
+
+  Changes not staged for commit:
+    (use "git add <file>..." to update what will be committed)
+    (use "git restore <file>..." to discard changes in working directory)
+          modified:   file.txt
+
+  no changes added to commit (use "git add" and/or "git commit -a")
+- Git Staging
+  PS G:\Saksham\Code\Assignment-repo> git add file.txt
+
+10. Revert and Reset.
+- Revert
+  PS G:\Saksham\Code\Assignment-repo> git commit -m "Changes for revert,reset command"
+  [master 7322c00] Changes for revert,reset command
+   1 file changed, 0 insertions(+), 0 deletions(-)
+  PS G:\Saksham\Code\Assignment-repo> git log --oneline
+  7322c00 (HEAD -> master) Changes for revert,reset command
+  8aac277 (origin/master) Changes Made Remotely
+  e868fb2 (test-branch, optional-branch) Updated file.txt with test-branch
+  c8bae01 Added a new file
+  PS G:\Saksham\Code\Assignment-repo> git revert 7322c00
+  [master c2bccf6] Revert "Changes for revert,reset command"
+   1 file changed, 0 insertions(+), 0 deletions(-)
+
+- Reset
+  PS G:\Saksham\Code\Assignment-repo> git log --oneline 
+  b84048e (HEAD -> master) Change for reset command
+  c2bccf6 Revert "Changes for revert,reset command"
+  7322c00 Changes for revert,reset command
+  8aac277 (origin/master) Changes Made Remotely
+  e868fb2 (test-branch, optional-branch) Updated file.txt with test-branch
+  c8bae01 Added a new file
+  PS G:\Saksham\Code\Assignment-repo> git reset --hard 8aac277
+  HEAD is now at 8aac277 Changes Made Remotely
