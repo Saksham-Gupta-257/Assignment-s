@@ -3,33 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roll The Dice</title>
+    <title>Two-Player Dice Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="title-container">
+        <h1 class="main-title">Dice Game</h1>
+        <h2 id="turn-indicator">Player 1's Turn</h2>
+        <button id="reset-game">Reset</button>
+    </div>
     <div class="game-container">
-        <h1>Roll The Dice</h1>
-        <div class="players">
-            <div class="player" id="player1">
-                <input type="text" id="name1" value="Player 1">
-                <p>Current Score: <span id="current1">0</span></p>
-                <p>Saved Score: <span id="saved1">0</span></p>
+        <div class="player" id="player1">
+            <input type="text" id="player1-name" value="Player 1">
+            <p>Saved Score: <span id="player1-saved">0</span></p>
+            <p>Current Score: <span id="player1-current">0</span></p>
+            <button id="save-score">Save Score</button>
+        </div>
+        <div class="dice-container">
+            <div class="dice">
+                <div class="face front"></div>
+                <div class="face back"></div>
+                <div class="face top"></div>
+                <div class="face bottom"></div>
+                <div class="face right"></div>
+                <div class="face left"></div>
             </div>
-            <div class="player" id="player2">
-                <input type="text" id="name2" value="Player 2">
-                <p>Current Score: <span id="current2">0</span></p>
-                <p>Saved Score: <span id="saved2">0</span></p>
-            </div>
+            <button id="roll-dice">Roll Dice</button>
         </div>
-        <div class="dice">
-            <img id="dice-image" src="dice1.png" alt="Dice">
+        <div class="player" id="player2">
+            <input type="text" id="player2-name" value="Player 2">
+            <p>Saved Score: <span id="player2-saved">0</span></p>
+            <p>Current Score: <span id="player2-current">0</span></p>
+            <button id="save-score">Save Score</button>
         </div>
-        <div class="controls">
-            <button id="rollDice">Roll Dice</button>
-            <button id="saveScore">Save Score</button>
-            <button id="resetGame">Reset Game</button>
+    </div>
+    <div id="winner-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="winner-message"></h2>
+            <button id="play-again">Play Again</button>
         </div>
-        <p id="winner"></p>
     </div>
     <script src="script.js"></script>
 </body>
