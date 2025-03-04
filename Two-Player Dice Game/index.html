@@ -1,48 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Two-Player Dice Game</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.cdnfonts.com/css/games" rel="stylesheet">
 </head>
+
 <body>
-    <div class="title-container">
-        <h1 class="main-title">Dice Game</h1>
-        <h2 id="turn-indicator">Player 1's Turn</h2>
-        <button id="reset-game">Reset</button>
+    <div class="main-menu">
+        <h1>Roll The Dice</h1>
+        <p>by Saksham Gupta</p>
+        <button id="play-button">Play</button>
     </div>
-    <div class="game-container">
-        <div class="player" id="player1">
-            <input type="text" id="player1-name" value="Player 1">
-            <p>Saved Score: <span id="player1-saved">0</span></p>
-            <p>Current Score: <span id="player1-current">0</span></p>
-            <button id="save-score">Save Score</button>
+    <div class="main-page">
+        <div class="title-container">
+            <h1 class="main-title">Dice Game</h1>
+            <h2 id="turn-indicator">Player 1's Turn</h2>
+            <button id="reset-game">Reset</button>
         </div>
-        <div class="dice-container">
-            <div class="dice">
-                <div class="face front"></div>
-                <div class="face back"></div>
-                <div class="face top"></div>
-                <div class="face bottom"></div>
-                <div class="face right"></div>
-                <div class="face left"></div>
+        <div class="game-container">
+            <div class="player" id="player1">
+                <input type="text" id="player1-name" value="Player 1">
+                <p>Saved Score: <span id="player1-saved">0</span></p>
+                <p>Current Score: <span id="player1-current">0</span></p>
+                <button id="save-score">Save Score</button>
             </div>
-            <button id="roll-dice">Roll Dice</button>
+            <div class="dice-container">
+                <div class="dice">
+                    <div class="face front"></div>
+                    <div class="face back"></div>
+                    <div class="face top"></div>
+                    <div class="face bottom"></div>
+                    <div class="face right"></div>
+                    <div class="face left"></div>
+                </div>
+                <button id="roll-dice">Roll Dice</button>
+            </div>
+            <div class="player" id="player2">
+                <input type="text" id="player2-name" value="Player 2">
+                <p>Saved Score: <span id="player2-saved">0</span></p>
+                <p>Current Score: <span id="player2-current">0</span></p>
+                <button id="save-score">Save Score</button>
+            </div>
         </div>
-        <div class="player" id="player2">
-            <input type="text" id="player2-name" value="Player 2">
-            <p>Saved Score: <span id="player2-saved">0</span></p>
-            <p>Current Score: <span id="player2-current">0</span></p>
-            <button id="save-score">Save Score</button>
-        </div>
-    </div>
-    <div id="winner-modal" class="modal">
-        <div class="modal-content">
-            <h2 id="winner-message"></h2>
-            <button id="play-again">Play Again</button>
+        <div id="winner-popup" class="popup">
+            <div class="popup-content">
+                <h2 id="winner-message"></h2>
+                <button id="play-again">Play Again</button>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>

@@ -10,11 +10,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const resetBtn = document.querySelector("#reset-game");
     const dice = document.querySelector(".dice");
     const turnIndicator = document.getElementById("turn-indicator");
-    const winnerModal = document.getElementById("winner-modal");
+    const winnerPopup = document.getElementById("winner-popup");
     const winnerMessage = document.getElementById("winner-message");
     const playAgainBtn = document.getElementById("play-again");
+    const playBtn = document.getElementById("play-button");
+    const mainMenu = document.querySelector(".main-menu");
+    const mainPage = document.querySelector(".main-page");
 
-    winnerModal.style.display = "none";
+
+    function startGame() {
+        mainMenu.style.opacity = "0";
+        setTimeout(() => {
+            mainMenu.style.display = "none";
+            mainPage.style.display = "flex";
+            document.getElementsByTagName("body")[0].style.height = 0;
+            document.getElementsByTagName("body")[0].style.margin = '80px';
+            setTimeout(() => {
+                mainPage.style.opacity = "1";
+            }, 50);
+        }, 500);
+    }
 
     function updateTurnIndicator() {
         const playerName = activePlayer === 1 ? player1Name.value : player2Name.value;
@@ -80,8 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentScore = 0;
                 switchTurn();
             } else {
-                //currentScore += random;
-                currentScore = random;
+                currentScore += random;
                 updateCurrentScore();
             }
         }, 4050);
@@ -124,12 +138,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Show Winner Popup
     function showWinnerPopup(winnerName) {
         winnerMessage.textContent = `${winnerName} Wins! 🎉`;
-        winnerModal.style.display = "flex";
+        winnerPopup.style.display = "flex";
     }
 
     // Close Winner Popup & Reset Game
     function resetGame() {
-        winnerModal.style.display = "none";
+        winnerPopup.style.display = "none";
         gameActive = true;
         currentScore = 0;
         savedScores = { 1: 0, 2: 0 };
@@ -154,6 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
     saveScoreBtns.forEach(button => button.addEventListener("click", saveScore));
     resetBtn.addEventListener("click", resetGame);
     playAgainBtn.addEventListener("click", resetGame);
+    playBtn.addEventListener("click", startGame);
 
     // Initialize Turn Indicator
     updateTurnIndicator();

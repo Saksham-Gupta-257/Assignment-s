@@ -7,6 +7,8 @@
 
 body {
     background: rgb(51, 51, 51);
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     margin-top: 60px;
@@ -15,6 +17,22 @@ body {
 
 h1 {
     color: #333;
+}
+
+.main-menu {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px 50px;
+    text-align: center;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.main-page {
+    display: none;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .title-container {
@@ -28,6 +46,8 @@ h1 {
 .main-title {
     text-align: center;
     color: #ffffff;
+    font-family: 'Snowy Christa';
+    font-size: 50px;
 }
 
 #turn-indicator {
@@ -45,6 +65,7 @@ h1 {
     justify-content: center;
     align-items: center;
     gap: 70px;
+    margin-top: 30px;
 }
 
 /*
@@ -261,7 +282,7 @@ button:hover {
     background: #c82333;
 }
 
-.modal {
+.popup {
     display: none;
     /* Ensures it is not visible at the start */
     position: fixed;
@@ -275,7 +296,7 @@ button:hover {
 }
 
 /* Modal Content */
-.modal-content {
+.popup-content {
     background: white;
     padding: 20px;
     border-radius: 10px;
@@ -303,4 +324,11 @@ button:hover {
 
 #play-again:hover {
     background: #218838;
+}
+
+@media screen and (max-width: 732px) {
+    .game-container {
+        margin-top: 20px;
+        gap: 30px;
+    }
 }
