@@ -247,6 +247,7 @@ h1 {
 /*
     Button style
 */
+
 button {
     background: #28a745;
     color: white;
@@ -284,7 +285,6 @@ button:hover {
 
 .popup {
     display: none;
-    /* Ensures it is not visible at the start */
     position: fixed;
     top: 0;
     left: 0;
@@ -295,7 +295,10 @@ button:hover {
     align-items: center;
 }
 
-/* Modal Content */
+/* 
+    Popup Content 
+*/
+
 .popup-content {
     background: white;
     padding: 20px;
@@ -305,13 +308,19 @@ button:hover {
     width: 300px;
 }
 
-/* Winner Message */
+/* 
+    Winner Message 
+*/
+
 #winner-message {
     font-size: 22px;
     margin-bottom: 20px;
 }
 
-/* Play Again Button */
+/* 
+    Play Again Button 
+*/
+
 #play-again {
     background: #28a745;
     color: white;
@@ -325,6 +334,10 @@ button:hover {
 #play-again:hover {
     background: #218838;
 }
+
+/* 
+    Adjustment for Change in Screen Size
+*/
 
 @media screen and (max-width: 732px) {
     .game-container {
