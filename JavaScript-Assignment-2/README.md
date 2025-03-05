@@ -55,13 +55,13 @@
 The game fetches questions from the **Open Trivia Database API** using:  
 
 ```plaintext
-https://opentdb.com/api.php?amount=20&category=<CATEGORY_ID>&difficulty=<DIFFICULTY>&type=multiple
+https://opentdb.com/api.php?amount=20&category=${category}&difficulty=${difficulty}&type=multiple
 ```
 
 🔹 **Parameters:**  
 - `amount=20` → Fetches 20 questions  
-- `category=<ID>` → Selected quiz category  
-- `difficulty=<easy|medium|hard>` → Sets the difficulty level  
+- `category=${category}` → Selected quiz category  
+- `difficulty=${difficulty}` → Sets the difficulty level  
 
 ## **Author**  
 **Saksham Gupta**  
