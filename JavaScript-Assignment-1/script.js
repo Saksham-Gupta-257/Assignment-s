@@ -47,6 +47,23 @@ document.addEventListener("DOMContentLoaded", () => {
         player2Name.disabled = true;
     }
 
+    function enableNameEditing() {
+        player1Name.disabled = false;
+        player2Name.disabled = false;
+    }
+
+    function disableButtons() {
+        rollBtn.disabled = true;
+        saveScoreBtns.forEach(button => button.disabled = true);
+        resetBtn.disabled = true;
+    }
+
+    function enableButtons() {
+        rollBtn.disabled = false;
+        saveScoreBtns.forEach(button => button.disabled = false);
+        resetBtn.disabled = false;
+    }
+
     // Game Variables
     let currentScore = 0;
     let activePlayer = 1;
@@ -62,6 +79,8 @@ document.addEventListener("DOMContentLoaded", () => {
             gameStarted = true;
             disableNameEditing();
         }
+
+        disableButtons();
 
         const random = Math.floor(Math.random() * 10);
         if (random >= 1 && random <= 6) {
@@ -108,6 +127,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentScore += random;
                 updateCurrentScore();
             }
+
+            enableButtons();
+
         }, 4050);
     };
 
@@ -155,6 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function resetGame() {
         winnerPopup.style.display = "none";
         gameActive = true;
+        gameStarted = false;
         currentScore = 0;
         savedScores = { 1: 0, 2: 0 };
         activePlayer = 1;
@@ -164,6 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
         player1Current.textContent = "0";
         player2Current.textContent = "0";
 
+        enableNameEditing();
         resetDice();
         updateTurnIndicator();
     }
