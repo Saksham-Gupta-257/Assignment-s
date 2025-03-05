@@ -44,11 +44,11 @@
 ## **File Structure**  
 ```
 /quiz-game
-│── index.html      # Main HTML file
-│── style.css       # Styling & layout
-│── script.js       # Game logic & API calls
 │── Background.jpg  # Background image
-│── README.md       # Documentation (this file)
+│── README.md       # Project documentation
+│── index.html      # Main HTML file
+│── script.js       # JavaScript file for game logic
+│── style.css       # Stylesheet for UI
 ```
 
 ## **API Integration**  
