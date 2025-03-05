@@ -10,12 +10,8 @@
 - [API Integration](#api-integration) 
 - [Author](#author)  
 
----
-
 ## **Introduction**  
 **Quiz Game** is a web-based interactive trivia game where players answer multiple-choice questions from different categories within a **15-second timer**. The game fetches questions dynamically from an API and tracks the player’s score.  
-
----
 
 ## **Features**  
 ✅ **Category Selection** – Choose from multiple quiz categories  
@@ -25,15 +21,11 @@
 ✅ **API Integration** – Fetches random questions from Open Trivia Database  
 ✅ **End Screen & Restart Option** – View final score and replay  
 
----
-
 ## **Technologies Used**  
 - **HTML** → Structure of the game  
 - **CSS** → Styling and layout  
 - **JavaScript** → Game logic and API handling  
 - **Open Trivia Database API** → Fetching quiz questions  
-
----
 
 ## **How to Run the Project**  
 1. **Clone or download** the repository.
@@ -42,16 +34,12 @@
 4. **Answer the questions** before the timer runs out.  
 5. **View your final score** and choose to **Play Again**.  
 
----
-
 ## **Game Rules**  
 1. Players must **answer each question within 15 seconds**.  
 2. If the timer runs out, the correct answer is displayed.  
 3. **Correct answers** increase the player’s score by **1 point**.  
 4. The game **ends after 20 questions**, displaying the final score.  
 5. Players can restart the game from the **end screen**.  
-
----
 
 ## **File Structure**  
 ```
@@ -62,8 +50,6 @@
 │── Background.jpg  # Background image
 │── README.md       # Documentation (this file)
 ```
-
----
 
 ## **API Integration**  
 The game fetches questions from the **Open Trivia Database API** using:  
@@ -76,8 +62,6 @@ https://opentdb.com/api.php?amount=20&category=<CATEGORY_ID>&difficulty=<DIFFICU
 - `amount=20` → Fetches 20 questions  
 - `category=<ID>` → Selected quiz category  
 - `difficulty=<easy|medium|hard>` → Sets the difficulty level  
-
----
 
 ## **Author**  
 **Saksham Gupta**  
