@@ -45,10 +45,10 @@
 ## File Structure
 ```
 /roll-the-dice-game
+|── README.md       # Project documentation
 │── index.html      # Main HTML file
-│── style.css       # Stylesheet for UI & animations
 │── script.js       # JavaScript file for game logic
-│── README.md       # Project documentation
+│── style.css       # Stylesheet for UI & animations
 ```
 
 ## Credits
