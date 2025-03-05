@@ -42,16 +42,26 @@ document.addEventListener("DOMContentLoaded", () => {
     player1Name.addEventListener("input", updateTurnIndicator);
     player2Name.addEventListener("input", updateTurnIndicator);
 
+    function disableNameEditing() {
+        player1Name.disabled = true;
+        player2Name.disabled = true;
+    }
 
     // Game Variables
     let currentScore = 0;
     let activePlayer = 1;
     let savedScores = { 1: 0, 2: 0 };
     let gameActive = true;
+    let gameStarted = false;
 
     // Roll Dice Animation
     const randomDice = () => {
         if (!gameActive) return;
+
+        if (!gameStarted) {
+            gameStarted = true;
+            disableNameEditing();
+        }
 
         const random = Math.floor(Math.random() * 10);
         if (random >= 1 && random <= 6) {
