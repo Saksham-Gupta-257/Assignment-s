@@ -339,6 +339,29 @@ button:hover {
     Adjustment for Change in Screen Size
 */
 
+@media screen and (max-width: 1055px) {
+    .game-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+        gap: 30px;
+    }
+}
+
+@media screen and (max-width: 976px) {
+    .game-container {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+        gap: 30px;
+    }
+}
+
 @media screen and (max-width: 732px) {
     .game-container {
         margin-top: 20px;
