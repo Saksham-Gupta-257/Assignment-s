@@ -2,14 +2,41 @@
 
 Ans:
 
-Primitive Data Types: Primitive data types are the basic types of data built into the language and serves as a fundamental building block. They represent single values and are stored in stack memory.
+Primitive Data Types: Primitive data types are the basic types of data built into the language and serve as a fundamental building block. They represent single values and are stored in stack memory.
                       There are 8 types of Primitive Data Type:
-                      1. int: Used to store 32-bit signed integer. Example: int num = 10;
-                      2. long: Used to store 64-bit signed integer. Example: long num = 10;
-                      3. float: Used to store 32-bit floating-point.
-                      4. double: Used to store 64-bit floating-point.
-                      5. char: Used to store 16-bit Unicode character.
-                      6. boolean: Used to represent true or false.
-                      7. byte: Used to store 8-bit signed integer.
-                      8. short: Used to store 16-bit signed integer.
-Reference Data Types:
+                      1. int: Used to store 32-bit signed integer. 
+                         Example: int num = 10;
+                      2. long: Used to store 64-bit signed integer. 
+                         Example: long num = 10;
+                      3. float: Used to store 32-bit floating-point value. 
+                         Example: float num = 3.14;
+                      4. double: Used to store 64-bit floating-point value. 
+                         Example: double num = 3.14159;
+                      5. char: Used to store a single 16-bit Unicode character. 
+                         Example: char i = 'A';
+                      6. boolean: Used to represent true or false. 
+                         Example: boolean flag = true;
+                      7. byte: Used to store 8-bit signed integer. 
+                         Example: byte b = 100;
+                      8. short: Used to store 16-bit signed integer. 
+                         Example: short s = 1000;
+
+Reference Data Types: Reference data types are objects that store the memory address of the value rather than the value itself. They are created using constructors or class definitions and are stored in heap 
+                      memory.
+                      There are several types of Reference Data Types:
+                      1. String: Used to store a sequence of characters. 
+                         Example: String name = "Java Assignment 1";
+                      2. Arrays: Used to store a fixed-size collection of elements of the same type. 
+                         Example: int[] arr = {1, 2, 3};
+                      3. Classes: Used to create objects with specific attributes and methods. 
+                         Example: class Person {  
+                                      String name;  
+                                      int age;  
+                                  }  
+                                  Person obj = new Person();  
+                      4. Interfaces: Used to define abstract methods that classes can implement. 
+                         Example: interface Animal {  
+                                      void eat();  
+                                  } 
+                      5. Enumeration: Used to define a fixed set of constants. 
+                         Example: enum Day { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY }  
