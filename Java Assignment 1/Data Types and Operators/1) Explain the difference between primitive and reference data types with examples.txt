@@ -1,0 +1,15 @@
+1) Explain the difference between primitive and reference data types with examples.
+
+Ans:
+
+Primitive Data Types: Primitive data types are the basic types of data built into the language and serves as a fundamental building block. They represent single values and are stored in stack memory.
+                      There are 8 types of Primitive Data Type:
+                      1. int: Used to store 32-bit signed integer. Example: int num = 10;
+                      2. long: Used to store 64-bit signed integer. Example: long num = 10;
+                      3. float: Used to store 32-bit floating-point.
+                      4. double: Used to store 64-bit floating-point.
+                      5. char: Used to store 16-bit Unicode character.
+                      6. boolean: Used to represent true or false.
+                      7. byte: Used to store 8-bit signed integer.
+                      8. short: Used to store 16-bit signed integer.
+Reference Data Types:
