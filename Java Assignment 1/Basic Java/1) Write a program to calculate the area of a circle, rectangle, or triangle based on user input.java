@@ -60,4 +60,4 @@ public class Area{
 // 3. Triangle
 // Enter the number of your choice: 1
 // Enter the radius of the circle: 8
-// The area of the circle is 200.960000
+// The area of the circle is: 200.96
