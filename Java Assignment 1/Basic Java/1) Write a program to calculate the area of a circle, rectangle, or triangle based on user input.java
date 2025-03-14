@@ -22,7 +22,7 @@ public class Area{
                 System.out.print("Enter the radius of the circle: ");
                 double r = scanner.nextDouble();
                 double circleArea = 3.14 * r * r;
-                System.out.printf("The area of the circle is %f\n", circleArea);
+                System.out.printf("The area of the circle is: " + circleArea);
                 break;
 
             case 2:
@@ -31,7 +31,7 @@ public class Area{
                 System.out.print("Enter the width of the rectangle: ");
                 double w = scanner.nextDouble();
                 double rectangleArea = l * w;
-                System.out.printf("The area of the rectangle is %f\n", rectangleArea);
+                System.out.printf("The area of the rectangle is: " + rectangleArea);
                 break;
 
             case 3:
@@ -40,7 +40,7 @@ public class Area{
                 System.out.print("Enter the height of the triangle: ");
                 double h = scanner.nextDouble();
                 double triangleArea = 0.5 * b * h;
-                System.out.printf("The area of the triangle is %f\n", triangleArea);
+                System.out.printf("The area of the triangle is: " + triangleArea);
                 break;
 
             default:
