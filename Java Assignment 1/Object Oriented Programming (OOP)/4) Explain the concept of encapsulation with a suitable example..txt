@@ -1,0 +1,33 @@
+4) Explain the concept of encapsulation with a suitable example.
+
+Ans: 
+
+Encapsulation is a fundamental principle of object-oriented programming (OOP) in Java that involves bundling the data and the methods that operate on the data into a single unit, known as a class. It increases security of the data as the attributes can
+only be accessed using its methods.
+
+Advantages of encapsulation:
+1. Data Hiding: Encapsulation hides an object's internal details, exposing only necessary information through a public interface.
+2. Flexibility: Internal implementation can be modified without affecting external code.
+3. Maintainability: Private fields with public getters and setters make code easier to maintain.
+
+Example:
+public class Student {
+ private String name;
+ private int roll_no;
+ 
+ public String getName() {
+     return name;
+ }
+ 
+ public void setName(String name) {
+     this.name = name;
+ }
+ 
+ public int getRollNo() {
+     return roll_no;
+ }
+ 
+ public void setRollNo(int roll_no) {
+     this.roll_no = roll_no;
+ }
+}
