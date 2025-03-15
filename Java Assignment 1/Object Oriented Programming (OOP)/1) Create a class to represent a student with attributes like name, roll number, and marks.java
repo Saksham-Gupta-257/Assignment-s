@@ -4,11 +4,13 @@
 
 import java.util.Scanner;
 
-public class Student {
+class Student {
 
     private String name;
     private int roll_no;
     private float marks;
+
+    public Student() {}
 
     public Student(String name, int roll_no, float marks) {
         this.name = name;
@@ -21,6 +23,9 @@ public class Student {
         System.out.println("Roll number: " + roll_no);
         System.out.println("Marks: " + marks);
     }
+}
+
+public class Main extends Student {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
