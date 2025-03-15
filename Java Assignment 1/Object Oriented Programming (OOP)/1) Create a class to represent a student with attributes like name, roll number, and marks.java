@@ -6,9 +6,9 @@ import java.util.Scanner;
 
 class Student {
 
-    private String name;
-    private int roll_no;
-    private float marks;
+    String name;
+    int roll_no;
+    float marks;
 
     public Student() {}
 
