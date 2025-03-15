@@ -51,7 +51,7 @@ class GraduateStudent extends Student {
     }
 }
 
-public class Main extends GraduateStudent {
+public class Main {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
