@@ -1,0 +1,29 @@
+4) Explore multithreading in Java to perform multiple tasks concurrently.
+
+Ans: 
+
+Threads: They are lightweight processes within a process and are the smallest unit of a process that can be scheduled for execution.
+
+Multithreading: Multithreading in Java allows us to execute multiple tasks (known as threads) concurrently within a single program (process). This improves the performance of the application by utilizing CPU resources more efficiently.
+
+                Multithreading can be implemented using the following two methods:
+                
+                1. Using the Thread class: The java.lang.Thread class is extended by class A, and class A needs to override the run() method of the Thread class. The thread can be executed by creating an object of class A and calling the start() method, which invokes the run() method.
+                                           Example:
+                                           class Multithreading extends Thread {
+                                               public void run() {}
+                                           }
+                
+                2. Using the Runnable interface: The java.lang.Runnable interface is implemented by class B, and class B needs to override the run() method of the Runnable interface. The thread can be executed by creating an object of class B, passing it to a Thread object, and calling the start() method, which invokes the run() method.
+                                                 Example:
+                                                 class Multithreading implements Runnable {
+                                                     public void run() {}
+                                                 }
+                
+                The Runnable interface is preferred because if we extend the Thread class, we cannot extend any other class (since Java does not support multiple inheritance).
+                The Runnable interface allows an object to be shared among multiple threads, which makes it more flexible and suitable for multithreading.
+                
+                Advantages of Multithreading:
+                
+                1. Efficient CPU utilization – Ensures that CPU resources are used effectively.
+                2. Simplified program structure – Helps in handling complex tasks more easily.
