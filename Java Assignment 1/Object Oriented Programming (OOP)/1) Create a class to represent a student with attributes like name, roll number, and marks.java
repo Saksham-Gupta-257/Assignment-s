@@ -25,7 +25,7 @@ class Student {
     }
 }
 
-public class Main extends Student {
+public class Main {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
