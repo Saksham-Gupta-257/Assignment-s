@@ -1,0 +1,28 @@
+1) Explain the concept of interfaces and abstract classes with examples.
+
+Ans:
+
+Interface : An interface in java is a collection of abstract methods. It is used to achieve abstraction i.e. it contains only abstract methods. It acts as an reference like a class. Apart from abstract methods it can also contain constants, default and static methods.
+            Example:
+            interface Circle { 
+                public void area(); 
+                public void perimeter(); 
+            }
+
+Abstract Class: An abstract class is a class in java which cannot be instantiates by itself. It serves as blueprint for other classes which inherits it. It contains both methods with definition and abstract methods(methods without definition).
+                It provides a base for its child classes to extend and implement the abstract methods or override concrete methods .
+
+                Example:
+                abstract class Circle {
+                    abstract void area();  
+                    public void print_line() {     
+                        System.out.println("Area of Circle.");
+                    }
+                }
+
+                class Rectangle extends Circle {
+                    @Override
+                    void area() {
+                        System.out.println("Area of Rectangle.");
+                    }
+                }           
