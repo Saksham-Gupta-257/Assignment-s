@@ -1,0 +1,17 @@
+This file contains the command used to create the Database.
+
+CREATE DATABASE hr_portal;
+
+CREATE TABLE Hr (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Employees (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    department VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    salary DOUBLE NOT NULL
+);

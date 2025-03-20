@@ -50,6 +50,7 @@ Java_Assignment_2/
 │ ├── employees.js # Employee management logic 
 │ ├── styles.css # Styling for the login page
 │ ├── style.css # Styling for the dashboard page
+└── Databse.txt # commands for database creation
 └── README.md # Project documentation
 
 ## How to Run
