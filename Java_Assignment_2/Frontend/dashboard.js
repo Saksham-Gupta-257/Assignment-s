@@ -7,7 +7,7 @@ let editingEmployeeId = null;
 // Load Employees on Page Load
 document.addEventListener('DOMContentLoaded', loadEmployees);
 
-// ==================== Load Employees ====================
+// Load Employees
 async function loadEmployees() {
     try {
         showLoading();
@@ -42,7 +42,7 @@ function displayEmployees(employees) {
     `).join('');
 }
 
-// ==================== Add/Edit Employee ====================
+// Add/Edit Employee
 const employeeForm = document.getElementById('employeeForm');
 
 employeeForm.addEventListener('submit', async (e) => {
@@ -99,7 +99,7 @@ async function updateEmployee(id, employee) {
     // alert('Employee updated successfully!');
 }
 
-// ==================== Open/Close Modal ====================
+// Open/Close Modal
 function openAddModal() {
     editingEmployeeId = null;
     document.getElementById('employee-id').value = '';
@@ -127,7 +127,7 @@ function closeModal() {
     employeeForm.reset();
 }
 
-// ==================== Delete Employee ====================
+// Delete Employee 
 function openDeleteModal(id) {
     employeeToDelete = id;
     document.getElementById('deleteModal').style.display = 'flex';
@@ -154,14 +154,14 @@ function closeDeleteModal() {
     document.getElementById('deleteModal').style.display = 'none';
 }
 
-// ==================== Logout ====================
+// Logout
 function logout() {
     localStorage.clear();
     localStorage.removeItem('token');
     window.location.replace('login.html');
 }
 
-// ==================== Loading Indicator ====================
+// Loading Indicator
 function showLoading() {
     const loading = document.createElement('div');
     loading.className = 'loading';
@@ -176,7 +176,6 @@ function hideLoading() {
 
 window.history.pushState(null, null, window.location.href);
 window.addEventListener('popstate', function () {
-    // Clear session and redirect to login page
     localStorage.removeItem('token');
     window.location.href = 'login.html';
 });

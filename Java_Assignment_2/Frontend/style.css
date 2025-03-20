@@ -125,7 +125,7 @@ tr:nth-child(odd) {
     }
 }
 
-/* ==================== Modal Styling ==================== */
+/* Modal Styling */
 .modal {
     display: none;
     position: fixed;
@@ -178,7 +178,7 @@ tr:nth-child(odd) {
     color: #000;
 }
 
-/* ==================== Form Styling ==================== */
+/* Form Styling */
 form input {
     width: 100%;
     padding: 12px;
@@ -212,7 +212,7 @@ form button:hover {
     background-color: #45a049;
 }
 
-/* ==================== Delete Confirmation Popup ==================== */
+/* Delete Confirmation Popup */
 #deleteModal .modal-content {
     padding: 20px;
     text-align: center;
@@ -259,7 +259,7 @@ form button:hover {
     background-color: #bbb;
 }
 
-/* ==================== Responsive Styling ==================== */
+/* Responsive Styling */
 @media (max-width: 480px) {
     .modal-content {
         padding: 16px;
