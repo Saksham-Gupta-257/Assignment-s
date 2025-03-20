@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <button class="logout-btn" onclick="logout()">Logout</button>
+        <h2>Employee Dashboard</h2>
+
+        <!-- Add Employee Button -->
+        <button class="add-btn" onclick="openAddModal()">+ Add Employee</button>
+
+        <!-- Employee List -->
+        <table id="employeeTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Email</th>
+                    <th>Salary</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Employee rows will be loaded here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add/Edit Employee Modal -->
+    <div id="employeeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title">Add Employee</h3>
+            <form id="employeeForm">
+                <input type="hidden" id="employee-id" />
+                <input type="text" id="employee-name" placeholder="Name" required />
+                <input type="text" id="employee-department" placeholder="Department" required />
+                <input type="email" id="employee-email" placeholder="Email" required />
+                <input type="number" id="employee-salary" placeholder="Salary" required />
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <p>Are you sure you want to delete this employee?</p>
+            <div class="action-buttons">
+                <button class="confirm-btn" onclick="confirmDelete()">Yes</button>
+                <button class="cancel-btn" onclick="closeDeleteModal()">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="employees.js"></script>
+</body>
+</html>
