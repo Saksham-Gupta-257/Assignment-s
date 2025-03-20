@@ -31,23 +31,23 @@ The **HR Portal** is a web-based application designed to manage employee data ef
 - **Build Tool**: Maven
 
 ## Project Structure
-Java_Assignment_2/ 
-├── hr_portal/ 
-│ ├── src/ 
-│ │ ├── main/ 
-│ │ │ ├── java/com/hrportal/hr_portal/ 
-│ │ │ │ ├── controller/ # REST controllers 
-│ │ │ │ ├── model/ # Entity classes 
-│ │ │ │ ├── repository/ # JPA repositories 
-│ │ │ │ ├── security/ # JWT and security configuration 
-│ │ │ │ ├── service/ # Business logic 
-│ │ │ │ └── HrPortalApplication.java 
-│ │ │ ├── application.properties 
-├── Frontend/ 
-│ ├── login.html # Login page 
-│ ├── employees.html # Employee dashboard 
-│ ├── login.js # Login logic 
-│ ├── employees.js # Employee management logic 
+Java_Assignment_2/
+├── hr_portal/
+│ ├── src/
+│ │ ├── main/
+│ │ │ ├── java/com/hrportal/hr_portal/
+│ │ │ │ ├── controller/ # REST controllers
+│ │ │ │ ├── model/ # Entity classes
+│ │ │ │ ├── repository/ # JPA repositories
+│ │ │ │ ├── security/ # JWT and security configuration
+│ │ │ │ ├── service/ # Business logic
+│ │ │ │ └── HrPortalApplication.java
+│ │ │ ├── application.properties
+├── Frontend/
+│ ├── login.html # Login page
+│ ├── employees.html # Employee dashboard
+│ ├── login.js # Login logic
+│ ├── employees.js # Employee management logic
 │ ├── styles.css # Styling for the login page
 │ ├── style.css # Styling for the dashboard page
 └── Databse.txt # commands for database creation
