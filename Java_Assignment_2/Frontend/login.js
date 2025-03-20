@@ -26,7 +26,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     if (response.ok) {
         const data = await response.json();
         localStorage.setItem('token', data.token);
-        window.location.href = 'employees.html';
+        window.location.href = 'dashboard.html';
         document.getElementById('email').value = '';
         document.getElementById('password').value = '';
     } else {

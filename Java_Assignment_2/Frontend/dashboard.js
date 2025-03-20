@@ -81,8 +81,8 @@ async function createEmployee(employee) {
         },
         body: JSON.stringify(employee)
     });
-    if (!response.ok) throw new Error('Failed to add employee');
-    alert('Employee added successfully!');
+    // if (!response.ok) throw new Error('Failed to add employee');
+    // alert('Employee added successfully!');
 }
 
 // Update Employee
@@ -95,8 +95,8 @@ async function updateEmployee(id, employee) {
         },
         body: JSON.stringify(employee)
     });
-    if (!response.ok) throw new Error('Failed to update employee');
-    alert('Employee updated successfully!');
+    // if (!response.ok) throw new Error('Failed to update employee');
+    // alert('Employee updated successfully!');
 }
 
 // ==================== Open/Close Modal ====================
@@ -139,8 +139,8 @@ async function confirmDelete() {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        if (!response.ok) throw new Error('Failed to delete employee');
-        alert('Employee deleted successfully!');
+        // if (!response.ok) throw new Error('Failed to delete employee');
+        // alert('Employee deleted successfully!');
         loadEmployees();
     } catch (error) {
         console.error('Error deleting employee:', error);
