@@ -1,12 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Clear all local storage and session data
     localStorage.clear();
 
-    // Reset the form inputs
     document.getElementById('email').value = '';
     document.getElementById('password').value = '';
 
-    // Remove any residual alerts or messages
     const alerts = document.querySelectorAll('.alert');
     alerts.forEach(alert => alert.remove());
 });

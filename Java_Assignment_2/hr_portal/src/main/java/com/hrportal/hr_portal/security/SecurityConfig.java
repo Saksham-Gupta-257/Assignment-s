@@ -31,7 +31,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/hr/login").permitAll()
                         .requestMatchers("/api/employees/**").authenticated())
                 .headers(headers -> headers
-                        .cacheControl(cache -> cache.disable()) // Step 6: Disable cache
+                        .cacheControl(cache -> cache.disable())
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
