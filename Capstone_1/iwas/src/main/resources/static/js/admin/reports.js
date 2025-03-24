@@ -1,4 +1,3 @@
-import { Chart } from "@/components/ui/chart"
 document.addEventListener("DOMContentLoaded", () => {
   loadReports()
 })
@@ -27,7 +26,7 @@ function loadReports() {
       const skillCounts = []
 
       const promises = skills.map((skill) => {
-        return fetch(`/api/users/skills/${skill.id}`)
+        return fetch(`http://localhost:8080/api/users/skills/${skill.id}`)
           .then((response) => response.json())
           .then((users) => {
             skillCounts.push(users.length)
@@ -108,7 +107,7 @@ function createSkillDistributionChart(skillNames, skillCounts) {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
-        yAxes: [
+        y: [
           {
             ticks: {
               beginAtZero: true,
