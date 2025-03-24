@@ -2,6 +2,7 @@ package com.iwas.iwas.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "leave_requests")
@@ -12,6 +13,7 @@ public class LeaveRequest {
     
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference(value="user-leave-reference")
     private User user;
     
     private String type; // "SICK", "VACATION", "OTHER"
@@ -93,4 +95,3 @@ public class LeaveRequest {
         this.status = status;
     }
 }
-

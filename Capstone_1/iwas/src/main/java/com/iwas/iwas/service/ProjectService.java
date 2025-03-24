@@ -51,6 +51,20 @@ public class ProjectService {
     }
     
     public Project updateProject(Project project) {
+        Optional<Project> existingProject = projectRepository.findById(project.getId());
+    
+        if (existingProject.isPresent() && 
+            "COMPLETED".equals(project.getStatus())) {
+        
+            // If project is being marked as completed and has an assigned user
+            User assignedUser = existingProject.get().getAssignedTo();
+            if (assignedUser != null) {
+                // Update user status to ON_BENCH
+                assignedUser.setStatus("ON_BENCH");
+                userRepository.save(assignedUser);
+            }
+        }
+    
         return projectRepository.save(project);
     }
     
@@ -83,6 +97,17 @@ public class ProjectService {
     
     public List<User> suggestEmployeesForProject(Long projectId) {
         // Logic to suggest employees based on required skills
+        Optional<Project> projectOpt = projectRepository.findById(projectId);
+        if (projectOpt.isPresent()) {
+            Project project = projectOpt.get();
+            List<ProjectSkill> requiredSkills = projectSkillRepository.findByProject(project);
+            
+            List<Long> skillIds = requiredSkills.stream()
+                    .map(ps -> ps.getSkill().getId())
+                    .collect(Collectors.toList());
+            
+            return userSkillService.findEmployeesWithSkills(skillIds);
+        }
         return List.of();
     }
     
