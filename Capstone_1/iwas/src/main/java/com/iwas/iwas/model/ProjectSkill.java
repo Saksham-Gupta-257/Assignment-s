@@ -1,6 +1,7 @@
 package com.iwas.iwas.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "project_skills")
@@ -11,10 +12,12 @@ public class ProjectSkill {
     
     @ManyToOne
     @JoinColumn(name = "project_id")
+    @JsonBackReference(value="project-skill-reference")
     private Project project;
     
     @ManyToOne
     @JoinColumn(name = "skill_id")
+    @JsonBackReference(value="skill-project-reference")
     private Skill skill;
     
     // Constructors
@@ -50,4 +53,3 @@ public class ProjectSkill {
         this.skill = skill;
     }
 }
-

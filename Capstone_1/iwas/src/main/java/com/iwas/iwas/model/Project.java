@@ -3,6 +3,8 @@ package com.iwas.iwas.model;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "projects")
@@ -19,9 +21,11 @@ public class Project {
     
     @ManyToOne
     @JoinColumn(name = "assigned_to")
+    @JsonBackReference(value="user-project-reference")
     private User assignedTo;
     
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value="project-skill-reference")
     private Set<ProjectSkill> requiredSkills = new HashSet<>();
     
     // Constructors
@@ -82,4 +86,3 @@ public class Project {
         this.requiredSkills = requiredSkills;
     }
 }
-

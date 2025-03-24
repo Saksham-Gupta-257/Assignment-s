@@ -1,6 +1,7 @@
 package com.iwas.iwas.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "user_skills")
@@ -11,10 +12,12 @@ public class UserSkill {
     
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference(value="user-skill-reference")
     private User user;
     
     @ManyToOne
     @JoinColumn(name = "skill_id")
+    @JsonBackReference(value="skill-user-reference")
     private Skill skill;
     
     private Integer rating; // 1-10 rating
@@ -61,4 +64,3 @@ public class UserSkill {
         this.rating = rating;
     }
 }
-

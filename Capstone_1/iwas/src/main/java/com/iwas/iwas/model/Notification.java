@@ -2,6 +2,7 @@ package com.iwas.iwas.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "notifications")
@@ -12,6 +13,7 @@ public class Notification {
     
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference(value="user-notification-reference")
     private User user;
     
     private String message;
@@ -74,4 +76,3 @@ public class Notification {
         isRead = read;
     }
 }
-

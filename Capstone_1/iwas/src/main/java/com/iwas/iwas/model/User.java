@@ -3,6 +3,8 @@ package com.iwas.iwas.model;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "users")
@@ -16,6 +18,7 @@ public class User {
     @Column(unique = true)
     private String email;
     
+    @JsonIgnore
     private String password;
     
     private String role; // "ADMIN" or "EMPLOYEE"
@@ -23,15 +26,19 @@ public class User {
     private String status; // "ON_BENCH", "ON_LEAVE", "IN_PROJECT"
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value="user-skill-reference")
     private Set<UserSkill> skills = new HashSet<>();
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value="user-leave-reference")
     private Set<LeaveRequest> leaveRequests = new HashSet<>();
     
     @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL)
+    @JsonManagedReference(value="user-project-reference")
     private Set<Project> assignedProjects = new HashSet<>();
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value="user-notification-reference")
     private Set<Notification> notifications = new HashSet<>();
 
     // Constructors
@@ -126,4 +133,3 @@ public class User {
         this.notifications = notifications;
     }
 }
-
