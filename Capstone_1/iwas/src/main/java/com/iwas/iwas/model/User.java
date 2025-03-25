@@ -17,8 +17,7 @@ public class User {
     
     @Column(unique = true)
     private String email;
-    
-    @JsonIgnore
+
     private String password;
     
     private String role; // "ADMIN" or "EMPLOYEE"
@@ -77,12 +76,12 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getRole() {

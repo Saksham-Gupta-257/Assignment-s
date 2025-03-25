@@ -146,52 +146,97 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Load projects
 function loadProjects() {
-  fetch("http://localhost:8080/api/projects")
-    .then((response) => response.json())
-    .then((data) => {
-      const tableBody = document.getElementById("projects-table-body")
-      if (!tableBody) {
-        console.error("Projects table body element not found")
-        return
-      }
+  // Fetch skills first to create a skill map
+  Promise.all([
+    fetch("http://localhost:8080/api/skills"),
+    fetch("http://localhost:8080/api/projects"),
+    fetch("http://localhost:8080/api/project-skills") // New endpoint to fetch project skills
+  ])
+    .then(([skillsResponse, projectsResponse, projectSkillsResponse]) =>
+      Promise.all([
+        skillsResponse.json(),
+        projectsResponse.json(),
+        projectSkillsResponse.json()
+      ])
+    )
+    .then(([skills, projects, projectSkills]) => {
+      // Create skills map
+      const skillMap = skills.reduce((map, skill) => {
+        map[skill.id] = skill.name;
+        return map;
+      }, {});
+
+      console.log("Project Skills API Response:", projectSkills);
+
+      // Group project skills by project ID
+      const projectSkillsMap = projectSkills.reduce((map, ps) => {
+        const projectId = ps.project.id; // Correctly reference the project ID
+        const skillId = ps.skill.id; // Correctly reference the skill ID
       
-      tableBody.innerHTML = ""
+        if (!map[projectId]) {
+          map[projectId] = [];
+        }
+        map[projectId].push(skillId);
+        return map;
+      }, {});
 
-      if (data.length === 0) {
-        const row = document.createElement("tr")
-        const cell = document.createElement("td")
-        cell.colSpan = 6
-        cell.textContent = "No projects found"
-        cell.style.textAlign = "center"
-        row.appendChild(cell)
-        tableBody.appendChild(row)
-        return
+      const tableBody = document.getElementById("projects-table-body");
+      if (!tableBody) {
+        console.error("Projects table body element not found");
+        return;
       }
 
-      data.forEach((project) => {
-        const row = document.createElement("tr")
+      tableBody.innerHTML = "";
 
-        const nameCell = document.createElement("td")
-        nameCell.textContent = project.name
+      if (projects.length === 0) {
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+        cell.colSpan = 6;
+        cell.textContent = "No projects found";
+        cell.style.textAlign = "center";
+        row.appendChild(cell);
+        tableBody.appendChild(row);
+        return;
+      }
 
-        const descriptionCell = document.createElement("td")
-        descriptionCell.textContent = project.description
+      projects.forEach((project) => {
+        const row = document.createElement("tr");
 
-        const skillsCell = document.createElement("td")
-        if (project.requiredSkills && project.requiredSkills.length > 0) {
-          const skillsList = document.createElement("div")
-          skillsList.className = "skills-list"
+        const nameCell = document.createElement("td");
+        nameCell.textContent = project.name;
 
-          project.requiredSkills.forEach((skill) => {
-            const skillBadge = document.createElement("span")
-            skillBadge.className = "skill-badge"
-            skillBadge.textContent = skill.name
-            skillsList.appendChild(skillBadge)
-          })
+        const descriptionCell = document.createElement("td");
+        descriptionCell.textContent = project.description;
 
-          skillsCell.appendChild(skillsList)
+        const skillsCell = document.createElement("td");
+
+        // Get skills for this specific project
+        const projectSkillIds = projectSkillsMap[project.id] || [];
+
+        if (projectSkillIds.length > 0) {
+          const skillsList = document.createElement("div");
+          skillsList.className = "skills-list";
+
+          // Use unique skill IDs
+          const uniqueSkillIds = [...new Set(projectSkillIds)];
+
+          uniqueSkillIds.forEach((skillId, index) => {
+            const skillName = skillMap[skillId] || `Skill ${skillId}`;
+            const skillBadge = document.createElement("span");
+            skillBadge.className = "skill-badge";
+            skillBadge.textContent = skillName;
+          
+            skillsList.appendChild(skillBadge);
+          
+            // Add a comma if it's NOT the last skill
+            if (index < uniqueSkillIds.length - 1) {
+              skillsList.appendChild(document.createTextNode(", "));
+            }
+          });
+
+          skillsCell.appendChild(skillsList);
         } else {
-          skillsCell.textContent = "No skills required"
+          skillsCell.textContent = "No skills required";
         }
 
         const assignedToCell = document.createElement("td")
@@ -578,7 +623,7 @@ function removeProjectSkill(projectId, skillId) {
     })
     .then(() => {
       // Refresh the skills list
-      openEditProjectModal(projectId)
+      // openEditProjectModal(projectId)
     })
     .catch((error) => {
       console.error("Error removing skill from project:", error)
