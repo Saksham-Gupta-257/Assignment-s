@@ -149,8 +149,10 @@ function createEmployeeCard(employee) {
 
 // Add employee
 function addEmployee(name, email, status) {
-  // Generate default password (name without spaces + @123)
-  const password = name.replace(/\s+/g, "") + "@123"
+  // Default password: name without spaces + "@123"
+  const password = name.replace(/\s+/g, "") + "@123";
+  console.log("Generated Password:", password);
+  status = status || "On Bench"; // Default status
 
   fetch("http://localhost:8080/api/users", {
     method: "POST",
@@ -167,24 +169,24 @@ function addEmployee(name, email, status) {
   })
     .then((response) => {
       if (!response.ok) {
-        return response.text().then((text) => {
-          throw new Error(text)
-        })
+        return response.json().then((data) => {
+          throw new Error(data.message || "Error adding employee");
+        });
       }
-      return response.json()
+      return response.json();
     })
     .then(() => {
-      document.getElementById("add-employee-modal").style.display = "none"
-      document.getElementById("add-employee-form").reset()
-      loadEmployees()
+      document.getElementById("add-employee-modal").style.display = "none";
+      document.getElementById("add-employee-form").reset();
+      loadEmployees(); // Refresh employee list
 
       // Show success message
-      showPopupMessage("Employee added successfully")
+      showPopupMessage("Employee added successfully", "success");
     })
     .catch((error) => {
-      console.error("Error adding employee:", error)
-      showPopupMessage("Error adding employee: " + error.message, "error")
-    })
+      console.error("Error adding employee:", error);
+      showPopupMessage("Error adding employee: " + error.message, "error");
+    });
 }
 
 // Open edit employee modal
