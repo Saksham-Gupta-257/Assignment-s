@@ -22,8 +22,27 @@ public class ProjectController {
     private ProjectService projectService;
     
     @GetMapping
-    public ResponseEntity<List<Project>> getAllProjects() {
-        return ResponseEntity.ok(projectService.getAllProjects());
+    public ResponseEntity<List<Map<String, Object>>> getAllProjects() {
+        List<Map<String, Object>> projects = projectService.getAllProjects().stream().map(project -> {
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", project.getId());
+            response.put("name", project.getName());
+            response.put("description", project.getDescription());
+            response.put("status", project.getStatus());
+
+            if (project.getAssignedTo() != null) {
+                Map<String, Object> assignedTo = new HashMap<>();
+                assignedTo.put("id", project.getAssignedTo().getId());
+                assignedTo.put("name", project.getAssignedTo().getName());
+                response.put("assignedTo", assignedTo);
+            } else {
+                response.put("assignedTo", null);
+           }
+
+           return response;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(projects);
     }
     
     @GetMapping("/active")

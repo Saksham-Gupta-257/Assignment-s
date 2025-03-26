@@ -137,6 +137,7 @@ a:hover {
 .modal {
   display: none;
   position: fixed;
+  overflow: scroll;
   z-index: 1000;
   left: 0;
   top: 0;

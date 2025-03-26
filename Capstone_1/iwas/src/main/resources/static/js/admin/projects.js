@@ -36,43 +36,44 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   }
 
-  // Edit project form submission
-  const editProjectForm = document.getElementById("edit-project-form")
-  if (editProjectForm) {
-    editProjectForm.addEventListener("submit", (e) => {
-      e.preventDefault()
+// Edit project form submission
+const editProjectForm = document.getElementById("edit-project-form")
+if (editProjectForm) {
+  editProjectForm.addEventListener("submit", (e) => {
+    e.preventDefault() // Prevent default form submission
+    e.stopPropagation() // Stop event from bubbling up
 
-      const id = document.getElementById("edit-project-id").value
-      const name = document.getElementById("edit-project-name").value
-      const description = document.getElementById("edit-project-description").value
-      const status = document.getElementById("edit-project-status").value
+    const id = document.getElementById("edit-project-id").value
+    const name = document.getElementById("edit-project-name").value
+    const description = document.getElementById("edit-project-description").value
+    const status = document.getElementById("edit-project-status").value
 
-      // First update the project details
-      updateProject(id, name, description, status)
-        .then(() => {
-          // After successfully updating the project, check for any new skills
-          const skillSelect = document.getElementById("edit-skill-select")
-          if (skillSelect && skillSelect.value) {
-            // If there's a selected skill, add it before closing the modal
-            return addProjectSkill(id, skillSelect.value)
-          }
-          return Promise.resolve()
-        })
-        .then(() => {
-          // Close the modal and refresh the projects list
-          const editProjectModal = document.getElementById("edit-project-modal")
-          if (editProjectModal) {
-            editProjectModal.style.display = "none"
-          }
-          loadProjects()
-          showPopupMessage("Project updated successfully with all skills")
-        })
-        .catch((error) => {
-          console.error("Error in project update process:", error)
-          showPopupMessage("Error updating project: " + error.message, "error")
-        })
-    })
-  }
+    // First update the project details
+    updateProject(id, name, description, status)
+      .then(() => {
+        // After successfully updating the project, check for any new skills
+        const skillSelect = document.getElementById("edit-skill-select")
+        if (skillSelect && skillSelect.value) {
+          // If there's a selected skill, add it before closing the modal
+          return addProjectSkill(id, skillSelect.value)
+        }
+        return Promise.resolve()
+      })
+      .then(() => {
+        // Close the modal and refresh the projects list
+        const editProjectModal = document.getElementById("edit-project-modal")
+        if (editProjectModal) {
+          editProjectModal.style.display = "none"
+        }
+        loadProjects()
+        showPopupMessage("Project updated successfully with all skills")
+      })
+      .catch((error) => {
+        console.error("Error in project update process:", error)
+        showPopupMessage("Error updating project: " + error.message, "error")
+      })
+  })
+}
 
   // Add skill button - this might be commented out in HTML, so adding null check
   const addSkillBtn = document.getElementById("add-skill-btn")
@@ -150,24 +151,30 @@ function loadProjects() {
   Promise.all([
     fetch("http://localhost:8080/api/skills"),
     fetch("http://localhost:8080/api/projects"),
-    fetch("http://localhost:8080/api/project-skills") // New endpoint to fetch project skills
+    fetch("http://localhost:8080/api/project-skills"),
+    fetch("http://localhost:8080/api/users")
   ])
-    .then(([skillsResponse, projectsResponse, projectSkillsResponse]) =>
+    .then(([skillsResponse, projectsResponse, projectSkillsResponse, usersResponse]) =>
       Promise.all([
         skillsResponse.json(),
         projectsResponse.json(),
-        projectSkillsResponse.json()
+        projectSkillsResponse.json(),
+        usersResponse.json()
       ])
     )
-    .then(([skills, projects, projectSkills]) => {
+    .then(([skills, projects, projectSkills, users]) => {
       // Create skills map
       const skillMap = skills.reduce((map, skill) => {
         map[skill.id] = skill.name;
         return map;
       }, {});
 
-      console.log("Project Skills API Response:", projectSkills);
+      const userMap = users.reduce((map, user) => {
+        map[user.id] = user.name;
+        return map;
+      }, {});
 
+      // console.log("User Map:", userMap);
       // Group project skills by project ID
       const projectSkillsMap = projectSkills.reduce((map, ps) => {
         const projectId = ps.project.id; // Correctly reference the project ID
@@ -179,6 +186,15 @@ function loadProjects() {
         map[projectId].push(skillId);
         return map;
       }, {});
+
+      const projectAssignedToMap = projects.reduce((map, project) => {
+        if (project.assignedTo) {
+          map[project.id] = project.assignedTo.id;
+        }
+        return map;
+      }, {});
+
+      console.log("User Map:", projectSkillsMap);
 
       const tableBody = document.getElementById("projects-table-body");
       if (!tableBody) {
@@ -239,11 +255,18 @@ function loadProjects() {
           skillsCell.textContent = "No skills required";
         }
 
-        const assignedToCell = document.createElement("td")
-        if (project.assignedTo) {
-          assignedToCell.textContent = project.assignedTo.name
+        const assignedToCell = document.createElement("td");
+        const projectAssignedToIds = projectAssignedToMap[project.id] || [];
+        if(projectAssignedToIds.length > 0) {
+
+        }
+        if (project.assignedTo && project.assignedTo.id) {
+          const assignedUserName = userMap[project.assignedTo.id];
+          console.log("Assigned User Name:", assignedUserName);
+          
+          assignedToCell.textContent = assignedUserName || "Unknown User";
         } else {
-          assignedToCell.textContent = "Not assigned"
+          assignedToCell.textContent = "Not assigned";
         }
 
         const statusCell = document.createElement("td")
@@ -298,32 +321,33 @@ function loadSkills() {
   fetch("http://localhost:8080/api/skills")
     .then((response) => response.json())
     .then((data) => {
-      const skillSelect = document.getElementById("skill-select")
       const editSkillSelect = document.getElementById("edit-skill-select")
+      const skillSelect = document.getElementById("skill-select")
 
-      // Check if edit skill select exists before using it
-      if (editSkillSelect) {
-        editSkillSelect.innerHTML = ""
-        
-        data.forEach((skill) => {
-          const option = document.createElement("option")
-          option.value = skill.id
-          option.textContent = skill.name
-          editSkillSelect.appendChild(option)
-        })
+      // Helper function to populate select element
+      const populateSelect = (selectElement) => {
+        if (selectElement) {
+          selectElement.innerHTML = "" // Clear existing options
+          
+          // Add a default "Select a skill" option
+          const defaultOption = document.createElement("option")
+          defaultOption.value = ""
+          defaultOption.textContent = "Select a skill"
+          selectElement.appendChild(defaultOption)
+
+          // Add skills
+          data.forEach((skill) => {
+            const option = document.createElement("option")
+            option.value = skill.id
+            option.textContent = skill.name
+            selectElement.appendChild(option)
+          })
+        }
       }
-      
-      // Check if skill select exists (it might be commented out in the HTML)
-      if (skillSelect) {
-        skillSelect.innerHTML = ""
-        
-        data.forEach((skill) => {
-          const option = document.createElement("option")
-          option.value = skill.id
-          option.textContent = skill.name
-          skillSelect.appendChild(option.cloneNode(true))
-        })
-      }
+
+      // Populate both select elements
+      populateSelect(editSkillSelect)
+      populateSelect(skillSelect)
     })
     .catch((error) => {
       console.error("Error loading skills:", error)
@@ -452,8 +476,10 @@ function openEditProjectModal(projectId) {
           const deleteBtn = document.createElement("button")
           deleteBtn.className = "btn btn-danger btn-sm"
           deleteBtn.innerHTML = '<i class="fas fa-times"></i>'
-          deleteBtn.addEventListener("click", () => {
-            removeProjectSkill(project.id, skill.id)
+          deleteBtn.addEventListener("click", (event) => {
+            event.preventDefault(); // Prevent default button behavior
+            event.stopPropagation(); // Stop event from bubbling up
+            removeProjectSkill(projectId, skill.id)
           })
 
           skillItem.appendChild(skillName)
@@ -622,8 +648,20 @@ function removeProjectSkill(projectId, skillId) {
       return response.text()
     })
     .then(() => {
-      // Refresh the skills list
-      // openEditProjectModal(projectId)
+      // Find and remove the specific skill item
+      const skillItem = document.querySelector(`.skill-item[data-skill-id="${skillId}"]`)
+      if (skillItem) {
+        skillItem.remove()
+      }
+
+      // Check if skills list is now empty
+      const skillsList = document.getElementById("edit-project-skills-list")
+      if (skillsList && skillsList.children.length === 0) {
+        skillsList.innerHTML = "<p>No skills required</p>"
+      }
+
+      // Show success message
+      showPopupMessage("Skill removed successfully")
     })
     .catch((error) => {
       console.error("Error removing skill from project:", error)

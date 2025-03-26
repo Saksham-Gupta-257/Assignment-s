@@ -22,23 +22,43 @@ function loadReports() {
   fetch("http://localhost:8080/api/skills")
     .then((response) => response.json())
     .then((skills) => {
-      const skillNames = skills.map((skill) => skill.name)
-      const skillCounts = []
+      // Fetch user skills data to count unique users per skill
+      return fetch("http://localhost:8080/api/user-skills")
+        .then((response) => {
+          // Check if the response is ok
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+          }
+          return response.json()
+        })
+        .then((userSkills) => {
+          // Process skills and user skills
+          const skillStats = skills.map((skill) => {
+            // Count unique users for each skill
+            const uniqueUsers = new Set(
+              userSkills
+                .filter((us) => us.skillId === skill.id)
+                .map((us) => us.userId)
+            ).size
 
-      const promises = skills.map((skill) => {
-        return fetch(`http://localhost:8080/api/users/skills/${skill.id}`)
-          .then((response) => response.json())
-          .then((users) => {
-            skillCounts.push(users.length)
+            return {
+              name: skill.name,
+              userCount: uniqueUsers
+            }
           })
-      })
 
-      Promise.all(promises).then(() => {
-        createSkillDistributionChart(skillNames, skillCounts)
-      })
+          // Separate skill names and counts for chart
+          const skillNames = skillStats.map((stat) => stat.name)
+          const skillCounts = skillStats.map((stat) => stat.userCount)
+
+          createSkillDistributionChart(skillNames, skillCounts)
+        })
     })
     .catch((error) => {
       console.error("Error loading skill distribution data:", error)
+      // Optionally, show an error message to the user
+      document.getElementById("skill-distribution-chart").innerHTML =
+        `<p>Error loading skill distribution: ${error.message}</p>`
     })
 
   // Load leave requests by type
@@ -107,19 +127,29 @@ function createSkillDistributionChart(skillNames, skillCounts) {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
-        y: [
-          {
-            ticks: {
-              beginAtZero: true,
-              stepSize: 1,
-            },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+            precision: 0,
+            callback: function(value) {
+              // Ensure only whole numbers are displayed
+              if (Number.isInteger(value)) {
+                return value;
+              }
+            }
           },
-        ],
+          grid: {
+            display: true
+          }
+        }
       },
-      title: {
-        display: true,
-        text: "Skill Distribution Among Employees",
-      },
+      plugins: {
+        title: {
+          display: true,
+          text: "Skill Distribution Among Employees",
+        }
+      }
     },
   })
 }
@@ -153,4 +183,3 @@ function createLeaveTypeChart(sickLeave, vacation, other) {
     },
   })
 }
-
