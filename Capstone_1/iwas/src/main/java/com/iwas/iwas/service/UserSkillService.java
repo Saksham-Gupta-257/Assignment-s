@@ -80,5 +80,9 @@ public class UserSkillService {
                 .distinct()
                 .collect(Collectors.toList());
     }
+
+    public List<UserSkill> getAllUserSkills() {
+        return userSkillRepository.findAll();
+    }
 }
 
