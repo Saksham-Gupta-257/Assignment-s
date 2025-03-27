@@ -177,8 +177,8 @@ function loadProjects() {
       // console.log("User Map:", userMap);
       // Group project skills by project ID
       const projectSkillsMap = projectSkills.reduce((map, ps) => {
-        const projectId = ps.project.id; // Correctly reference the project ID
-        const skillId = ps.skill.id; // Correctly reference the skill ID
+        const projectId = ps.project.id;
+        const skillId = ps.skill.id;
       
         if (!map[projectId]) {
           map[projectId] = [];
@@ -699,15 +699,22 @@ function openAssignProjectModal(projectId) {
   // Load suggested employees
   Promise.all([
     fetch(`http://localhost:8080/api/projects/${projectId}/suggest`),
-    fetch(`http://localhost:8080/api/user-skills`)
+    fetch(`http://localhost:8080/api/user-skills`),
+    fetch(`http://localhost:8080/api/users`)
   ])
-    .then(([suggestedResponse, skillRatingsResponse]) => 
+    .then(([suggestedResponse, skillRatingsResponse, usersResponse]) => 
       Promise.all([
         suggestedResponse.json(), 
-        skillRatingsResponse.json()
+        skillRatingsResponse.json(),
+        usersResponse.json()
       ])
     )
-    .then(([employees, userSkills]) => {
+    .then(([employees, userSkills, users]) => {
+      // Filter out admin users
+      const nonAdminEmployees = employees.filter(employee => 
+        !users.find(user => user.id === employee.id && user.role === 'ADMIN')
+      )
+
       const suggestedList = document.getElementById("suggested-employees-list")
       if (!suggestedList) {
         console.error("Suggested employees list element not found")
@@ -716,12 +723,12 @@ function openAssignProjectModal(projectId) {
       
       suggestedList.innerHTML = ""
 
-      if (employees.length === 0) {
-        suggestedList.innerHTML = "<p>No suggested employees found</p>"
+      if (nonAdminEmployees.length === 0) {
+        suggestedList.innerHTML = "<p>No suggested non-admin employees found</p>"
         return
       }
 
-      employees.forEach((employee) => {
+      nonAdminEmployees.forEach((employee) => {
         const employeeItem = document.createElement("div")
         employeeItem.className = "employee-item"
 
@@ -785,14 +792,17 @@ function openAssignProjectModal(projectId) {
       
       employeeSelect.innerHTML = ""
 
-      if (employees.length === 0) {
+      // Filter out admin users
+      const nonAdminEmployees = employees.filter(employee => employee.role !== 'ADMIN')
+
+      if (nonAdminEmployees.length === 0) {
         const option = document.createElement("option")
-        option.textContent = "No available employees"
+        option.textContent = "No available non-admin employees"
         employeeSelect.appendChild(option)
         return
       }
 
-      employees.forEach((employee) => {
+      nonAdminEmployees.forEach((employee) => {
         const option = document.createElement("option")
         option.value = employee.id
         option.textContent = `${employee.name} (${employee.email})`

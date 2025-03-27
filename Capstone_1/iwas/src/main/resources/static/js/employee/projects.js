@@ -49,12 +49,12 @@ function loadCurrentProject() {
 
       if (activeProjects.length === 0) {
         currentProjectContainer.innerHTML = `
-                    <div class="empty-state">
-                        <h3>No Current Project</h3>
-                        <p>You are not assigned to any project at the moment.</p>
-                        <p>Check the "Available Projects" tab to see if there are any projects you can apply for.</p>
-                    </div>
-                `
+          <div class="empty-state">
+            <h3>No Current Project</h3>
+            <p>You are not assigned to any project at the moment.</p>
+            <p>Check the "Available Projects" tab to see if there are any projects you can apply for.</p>
+          </div>
+        `
         return
       }
 
@@ -81,34 +81,8 @@ function loadCurrentProject() {
       projectDescription.className = "project-description"
       projectDescription.textContent = project.description
 
-      const skillsSection = document.createElement("div")
-      skillsSection.className = "project-skills-section"
-
-      const skillsTitle = document.createElement("h4")
-      skillsTitle.textContent = "Required Skills"
-
-      const skillsList = document.createElement("div")
-      skillsList.className = "skills-list"
-
-      if (project.requiredSkills && project.requiredSkills.length > 0) {
-        project.requiredSkills.forEach((skill) => {
-          const skillBadge = document.createElement("span")
-          skillBadge.className = "skill-badge"
-          skillBadge.textContent = skill.name
-          skillsList.appendChild(skillBadge)
-        })
-      } else {
-        const noSkills = document.createElement("p")
-        noSkills.textContent = "No specific skills required"
-        skillsList.appendChild(noSkills)
-      }
-
-      skillsSection.appendChild(skillsTitle)
-      skillsSection.appendChild(skillsList)
-
       projectCard.appendChild(projectHeader)
       projectCard.appendChild(projectDescription)
-      projectCard.appendChild(skillsSection)
 
       currentProjectContainer.appendChild(projectCard)
     })
@@ -119,29 +93,54 @@ function loadCurrentProject() {
 
 // Load available projects
 function loadAvailableProjects() {
-  // Fetch skills along with projects
+  const user = JSON.parse(localStorage.getItem("user"))
+
   Promise.all([
     fetch("http://localhost:8080/api/skills"),
-    fetch("http://localhost:8080/api/projects/active")
+    fetch("http://localhost:8080/api/projects/active"),
+    fetch("http://localhost:8080/api/project-skills"),
+    fetch(`http://localhost:8080/api/projects/user/${user.id}`)
   ])
-    .then(([skillsResponse, projectsResponse]) => 
+    .then(([skillsResponse, projectsResponse, projectSkillsResponse, userProjectsResponse]) => 
       Promise.all([
         skillsResponse.json(), 
-        projectsResponse.json()
+        projectsResponse.json(),
+        projectSkillsResponse.json(),
+        userProjectsResponse.json()
       ])
     )
-    .then(([skills, projects]) => {
-      // Create a skill map for easy lookup
+    .then(([skills, projects, projectSkills, userProjects]) => {
+      // Create skill map for easy lookup
       const skillMap = skills.reduce((map, skill) => {
         map[skill.id] = skill.name;
+        return map;
+      }, {});
+
+      // Get IDs of user's active projects
+      const userActiveProjectIds = userProjects
+        .filter(project => project.status === "ACTIVE")
+        .map(project => project.id);
+
+      // Create a mapping of project IDs to their skills
+      const projectSkillsMap = projectSkills.reduce((map, projectSkill) => {
+        const projectId = projectSkill.project.id;
+        const skillId = projectSkill.skill.id;
+
+        if (!map[projectId]) {
+          map[projectId] = [];
+        }
+        
+        map[projectId].push(skillMap[skillId]);
         return map;
       }, {});
 
       const availableProjectsContainer = document.getElementById("available-projects")
       availableProjectsContainer.innerHTML = ""
 
-      // Filter for projects that are not assigned to anyone
-      const availableProjects = projects.filter((project) => !project.assignedTo)
+      // Filter for projects that are not assigned to anyone and not already assigned to the user
+      const availableProjects = projects.filter((project) => 
+        !project.assignedTo && !userActiveProjectIds.includes(project.id)
+      );
 
       if (availableProjects.length === 0) {
         availableProjectsContainer.innerHTML = `
@@ -167,13 +166,14 @@ function loadAvailableProjects() {
         const skillsContainer = document.createElement("div")
         skillsContainer.className = "skills"
 
-        // Check if project has skills associated
-        if (project.requiredSkills && project.requiredSkills.length > 0) {
-          project.requiredSkills.forEach((skill) => {
+        // Get skills for this specific project
+        const projectSpecificSkills = projectSkillsMap[project.id] || [];
+
+        if (projectSpecificSkills.length > 0) {
+          projectSpecificSkills.forEach((skillName) => {
             const skillBadge = document.createElement("span")
             skillBadge.className = "skill-badge"
-            // Use the skill map to get skill name, fallback to skill.name
-            skillBadge.textContent = skillMap[skill.id] || skill.name
+            skillBadge.textContent = skillName
             skillsContainer.appendChild(skillBadge)
           })
         } else {
