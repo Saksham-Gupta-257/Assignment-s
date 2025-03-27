@@ -3,6 +3,7 @@ package com.iwas.iwas.model;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -130,5 +131,16 @@ public class User {
 
     public void setNotifications(Set<Notification> notifications) {
         this.notifications = notifications;
+    }
+
+    @Transient
+    private List<Skill> transientMatchedSkills;
+
+    public List<Skill> getTransientMatchedSkills() {
+        return transientMatchedSkills;
+    }
+
+    public void setTransientMatchedSkills(List<Skill> transientMatchedSkills) {
+        this.transientMatchedSkills = transientMatchedSkills;
     }
 }
