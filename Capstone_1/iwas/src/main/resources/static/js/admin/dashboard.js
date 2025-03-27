@@ -28,13 +28,16 @@ function loadDashboardStats() {
 
 // Load active projects
 function loadActiveProjects() {
-  fetch("http://localhost:8080/api/projects/active")
+  fetch("http://localhost:8080/api/projects")
     .then((response) => response.json())
-    .then((data) => {
+    .then((projects) => {
       const tableBody = document.getElementById("projects-table-body")
       tableBody.innerHTML = ""
 
-      if (data.length === 0) {
+      // Filter only active projects
+      const activeProjects = projects.filter(project => project.status === "ACTIVE")
+
+      if (activeProjects.length === 0) {
         const row = document.createElement("tr")
         const cell = document.createElement("td")
         cell.colSpan = 4
@@ -45,7 +48,7 @@ function loadActiveProjects() {
         return
       }
 
-      data.forEach((project) => {
+      activeProjects.forEach((project) => {
         const row = document.createElement("tr")
 
         const nameCell = document.createElement("td")
@@ -76,4 +79,3 @@ function loadActiveProjects() {
       console.error("Error loading active projects:", error)
     })
 }
-
