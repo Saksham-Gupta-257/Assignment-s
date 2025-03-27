@@ -96,17 +96,34 @@ public class ProjectService {
     }
     
     public List<User> suggestEmployeesForProject(Long projectId) {
-        // Logic to suggest employees based on required skills
         Optional<Project> projectOpt = projectRepository.findById(projectId);
         if (projectOpt.isPresent()) {
             Project project = projectOpt.get();
             List<ProjectSkill> requiredSkills = projectSkillRepository.findByProject(project);
-            
+        
             List<Long> skillIds = requiredSkills.stream()
                     .map(ps -> ps.getSkill().getId())
                     .collect(Collectors.toList());
-            
-            return userSkillService.findEmployeesWithSkills(skillIds);
+        
+            // Find employees with matching skills
+            List<User> suggestedEmployees = userSkillService.findEmployeesWithSkills(skillIds);
+        
+            suggestedEmployees.forEach(user -> {
+                // Filter and mark matched skills for this user
+                List<Skill> matchedSkills = requiredSkills.stream()
+                    .filter(projectSkill -> 
+                        user.getSkills().stream()
+                            .anyMatch(userSkill -> 
+                                userSkill.getSkill().getId().equals(projectSkill.getSkill().getId())
+                            )
+                    )
+                    .map(ProjectSkill::getSkill)
+                    .collect(Collectors.toList());
+
+                user.setTransientMatchedSkills(matchedSkills);
+            });
+        
+            return suggestedEmployees;
         }
         return List.of();
     }

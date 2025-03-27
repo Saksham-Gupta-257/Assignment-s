@@ -614,9 +614,17 @@ function openAssignProjectModal(projectId) {
   }
 
   // Load suggested employees
-  fetch(`http://localhost:8080/api/projects/${projectId}/suggest`)
-    .then((response) => response.json())
-    .then((employees) => {
+  Promise.all([
+    fetch(`http://localhost:8080/api/projects/${projectId}/suggest`),
+    fetch(`http://localhost:8080/api/user-skills`)
+  ])
+    .then(([suggestedResponse, skillRatingsResponse]) => 
+      Promise.all([
+        suggestedResponse.json(), 
+        skillRatingsResponse.json()
+      ])
+    )
+    .then(([employees, userSkills]) => {
       const suggestedList = document.getElementById("suggested-employees-list")
       if (!suggestedList) {
         console.error("Suggested employees list element not found")
@@ -636,10 +644,35 @@ function openAssignProjectModal(projectId) {
 
         const employeeInfo = document.createElement("div")
         employeeInfo.className = "employee-info"
-        employeeInfo.innerHTML = `
-                    <h4>${employee.name}</h4>
-                    <p>${employee.email}</p>
+        
+        // Filter user skills for this employee
+        const employeeSkills = userSkills.filter(us => us.userId === employee.id)
+
+        // Create matched skills display with ratings
+        const matchedSkillsHtml = employee.transientMatchedSkills
+          ? employee.transientMatchedSkills
+              .map(skill => {
+                // Find the rating for this skill
+                const skillRating = employeeSkills.find(us => us.skillId === skill.id)?.rating || 0
+
+                return `
+                  <div class="skill-rating-item">
+                    <span class="skill-badge">${skill.name}</span>
+                    <span class="skill-rating">${skillRating}/10</span>
+                  </div>
                 `
+              })
+              .join('')
+          : 'No specific skills matched'
+
+        employeeInfo.innerHTML = `
+          <h4>${employee.name}</h4>
+          <p>${employee.email}</p>
+          <div class="matched-skills">
+            <strong>Matched Skills:</strong> 
+            ${matchedSkillsHtml}
+          </div>
+        `
 
         const assignBtn = document.createElement("button")
         assignBtn.className = "btn btn-primary"
