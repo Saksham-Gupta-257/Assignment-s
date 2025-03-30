@@ -36,44 +36,44 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   }
 
-// Edit project form submission
-const editProjectForm = document.getElementById("edit-project-form")
-if (editProjectForm) {
-  editProjectForm.addEventListener("submit", (e) => {
-    e.preventDefault() // Prevent default form submission
-    e.stopPropagation() // Stop event from bubbling up
+  // Edit project form submission
+  const editProjectForm = document.getElementById("edit-project-form")
+  if (editProjectForm) {
+    editProjectForm.addEventListener("submit", (e) => {
+      e.preventDefault() // Prevent default form submission
+      e.stopPropagation() // Stop event from bubbling up
 
-    const id = document.getElementById("edit-project-id").value
-    const name = document.getElementById("edit-project-name").value
-    const description = document.getElementById("edit-project-description").value
-    const status = document.getElementById("edit-project-status").value
+      const id = document.getElementById("edit-project-id").value
+      const name = document.getElementById("edit-project-name").value
+      const description = document.getElementById("edit-project-description").value
+      const status = document.getElementById("edit-project-status").value
 
-    // First update the project details
-    updateProject(id, name, description, status)
-      .then(() => {
-        // After successfully updating the project, check for any new skills
-        const skillSelect = document.getElementById("edit-skill-select")
-        if (skillSelect && skillSelect.value) {
-          // If there's a selected skill, add it before closing the modal
-          return addProjectSkill(id, skillSelect.value)
-        }
-        return Promise.resolve()
-      })
-      .then(() => {
-        // Close the modal and refresh the projects list
-        const editProjectModal = document.getElementById("edit-project-modal")
-        if (editProjectModal) {
-          editProjectModal.style.display = "none"
-        }
-        loadProjects()
-        showPopupMessage("Project updated successfully with all skills")
-      })
-      .catch((error) => {
-        console.error("Error in project update process:", error)
-        showPopupMessage("Error updating project: " + error.message, "error")
-      })
-  })
-}
+      // First update the project details
+      updateProject(id, name, description, status)
+        .then(() => {
+          // After successfully updating the project, check for any new skills
+          const skillSelect = document.getElementById("edit-skill-select")
+          if (skillSelect && skillSelect.value) {
+            // If there's a selected skill, add it before closing the modal
+            return addProjectSkill(id, skillSelect.value)
+          }
+          return Promise.resolve()
+        })
+        .then(() => {
+          // Close the modal and refresh the projects list
+          const editProjectModal = document.getElementById("edit-project-modal")
+          if (editProjectModal) {
+            editProjectModal.style.display = "none"
+          }
+          loadProjects()
+          showPopupMessage("Project updated successfully")
+        })
+        .catch((error) => {
+          console.error("Error in project update process:", error)
+          showPopupMessage("Error updating project: " + error.message, "error")
+        })
+    })
+  }
 
   // Add skill button - this might be commented out in HTML, so adding null check
   const addSkillBtn = document.getElementById("add-skill-btn")
@@ -476,10 +476,29 @@ function openEditProjectModal(projectId) {
           const deleteBtn = document.createElement("button")
           deleteBtn.className = "btn btn-danger btn-sm"
           deleteBtn.innerHTML = '<i class="fas fa-times"></i>'
-          deleteBtn.addEventListener("click", (event) => {
-            event.preventDefault(); // Prevent default button behavior
-            event.stopPropagation(); // Stop event from bubbling up
+          
+          // FIX: Modified event listener to properly remove skill
+          deleteBtn.addEventListener("click", function(event) {
+            event.preventDefault() // Prevent default button behavior
+            event.stopPropagation() // Stop event from bubbling up
+            
+            // Log to confirm function is triggered
+            console.log(`Removing skill ${skill.id} from project ${projectId}`)
+            
+            // Call remove function
             removeProjectSkill(projectId, skill.id)
+              .then(() => {
+                // After successful removal, remove the item from the DOM
+                skillItem.remove()
+                
+                // Check if skills list is now empty
+                if (skillsList.children.length === 0) {
+                  skillsList.innerHTML = "<p>No skills required</p>"
+                }
+              })
+              .catch(error => {
+                console.error("Failed to remove skill:", error)
+              })
           })
 
           skillItem.appendChild(skillName)
@@ -636,7 +655,10 @@ function addProjectSkill(projectId, skillId) {
 
 // Remove project skill
 function removeProjectSkill(projectId, skillId) {
-  fetch(`http://localhost:8080/api/projects/${projectId}/skills/${skillId}`, {
+  console.log(`removeProjectSkill called with projectId=${projectId}, skillId=${skillId}`)
+  
+  // FIX: Return the Promise from the fetch call so we can chain .then() in the caller
+  return fetch(`http://localhost:8080/api/projects/${projectId}/skills/${skillId}`, {
     method: "DELETE",
   })
     .then((response) => {
@@ -645,27 +667,20 @@ function removeProjectSkill(projectId, skillId) {
           throw new Error(text)
         })
       }
+      console.log(`Skill ${skillId} successfully removed from project ${projectId}`)
       return response.text()
     })
     .then(() => {
-      // Find and remove the specific skill item
-      const skillItem = document.querySelector(`.skill-item[data-skill-id="${skillId}"]`)
-      if (skillItem) {
-        skillItem.remove()
-      }
-
-      // Check if skills list is now empty
-      const skillsList = document.getElementById("edit-project-skills-list")
-      if (skillsList && skillsList.children.length === 0) {
-        skillsList.innerHTML = "<p>No skills required</p>"
-      }
-
       // Show success message
       showPopupMessage("Skill removed successfully")
+      
+      // Return a resolved promise for chaining
+      return Promise.resolve()
     })
     .catch((error) => {
       console.error("Error removing skill from project:", error)
       showPopupMessage("Error removing skill from project: " + error.message, "error")
+      return Promise.reject(error)
     })
 }
 
