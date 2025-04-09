@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   }
 
-  // Add skill button - this might be commented out in HTML, so adding null check
+  // Add skill button
   const addSkillBtn = document.getElementById("add-skill-btn")
   if (addSkillBtn) {
     addSkillBtn.addEventListener("click", () => {
@@ -109,7 +109,6 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn("Element 'edit-add-skill-btn' not found in the document")
   }
 
-  // Tab buttons
   const tabButtons = document.querySelectorAll(".tab-btn")
   tabButtons.forEach((button) => {
     button.addEventListener("click", function () {
@@ -324,7 +323,6 @@ function loadSkills() {
       const editSkillSelect = document.getElementById("edit-skill-select")
       const skillSelect = document.getElementById("skill-select")
 
-      // Helper function to populate select element
       const populateSelect = (selectElement) => {
         if (selectElement) {
           selectElement.innerHTML = "" // Clear existing options
@@ -382,7 +380,7 @@ function addProject(name, description) {
         addProjectForm.setAttribute("data-project-id", project.id)
       }
 
-      // Add skills to project - with null check
+      // Add skills to project
       const skillsList = document.getElementById("project-skills-list")
 
       // Check if skillsList exists before trying to use it
@@ -477,7 +475,6 @@ function openEditProjectModal(projectId) {
           deleteBtn.className = "btn btn-danger btn-sm"
           deleteBtn.innerHTML = '<i class="fas fa-times"></i>'
           
-          // FIX: Modified event listener to properly remove skill
           deleteBtn.addEventListener("click", function(event) {
             event.preventDefault() // Prevent default button behavior
             event.stopPropagation() // Stop event from bubbling up
@@ -488,10 +485,8 @@ function openEditProjectModal(projectId) {
             // Call remove function
             removeProjectSkill(projectId, skill.id)
               .then(() => {
-                // After successful removal, remove the item from the DOM
                 skillItem.remove()
                 
-                // Check if skills list is now empty
                 if (skillsList.children.length === 0) {
                   skillsList.innerHTML = "<p>No skills required</p>"
                 }
@@ -543,7 +538,7 @@ function updateProject(id, name, description, status) {
     .catch((error) => {
       console.error("Error updating project:", error)
       showPopupMessage("Error updating project: " + error.message, "error")
-      throw error // Re-throw to allow proper Promise chaining
+      throw error 
     })
 }
 
@@ -657,7 +652,6 @@ function addProjectSkill(projectId, skillId) {
 function removeProjectSkill(projectId, skillId) {
   console.log(`removeProjectSkill called with projectId=${projectId}, skillId=${skillId}`)
   
-  // FIX: Return the Promise from the fetch call so we can chain .then() in the caller
   return fetch(`http://localhost:8080/api/projects/${projectId}/skills/${skillId}`, {
     method: "DELETE",
   })
@@ -674,7 +668,6 @@ function removeProjectSkill(projectId, skillId) {
       // Show success message
       showPopupMessage("Skill removed successfully")
       
-      // Return a resolved promise for chaining
       return Promise.resolve()
     })
     .catch((error) => {

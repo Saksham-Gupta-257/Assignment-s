@@ -20,7 +20,6 @@ public class UserSkillController {
     // Get all user skills
     @GetMapping
     public ResponseEntity<List<UserSkillDTO>> getAllUserSkills() {
-        // Fetch all user skills and convert to DTO
         List<UserSkill> userSkills = userSkillService.getAllUserSkills();
         List<UserSkillDTO> userSkillDTOs = userSkills.stream()
             .map(UserSkillDTO::new)
@@ -93,8 +92,7 @@ public class UserSkillController {
             this.skillName = userSkill.getSkill().getName();
             this.rating = userSkill.getRating();
         }
-
-        // Getters
+        
         public Long getId() { return id; }
         public Long getUserId() { return userId; }
         public Long getSkillId() { return skillId; }
