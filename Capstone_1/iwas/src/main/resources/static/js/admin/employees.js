@@ -152,7 +152,7 @@ function addEmployee(name, email, status) {
   // Default password: name without spaces + "@123"
   const password = name.replace(/\s+/g, "") + "@123";
   console.log("Generated Password:", password);
-  status = status || "On Bench"; // Default status
+  status = status || "On Bench";
 
   fetch("http://localhost:8080/api/users", {
     method: "POST",

@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", function () {
       const tabId = this.getAttribute("data-tab")
 
-      // Remove active class from all buttons and panes
       document.querySelectorAll(".tab-btn").forEach((btn) => {
         btn.classList.remove("active")
       })
@@ -16,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
         pane.classList.remove("active")
       })
 
-      // Add active class to clicked button and corresponding pane
       this.classList.add("active")
       document.getElementById(`${tabId}-tab`).classList.add("active")
     })

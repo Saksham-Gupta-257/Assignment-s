@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/project-skills")
-@CrossOrigin(origins = "http://localhost:3000") // Adjust if your frontend runs on a different port
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProjectSkillController {
 
     private final ProjectSkillService projectSkillService;
@@ -23,7 +23,7 @@ public class ProjectSkillController {
         this.projectSkillService = projectSkillService;
     }
 
-    // ✅ Get all project-skill mappings (Used in JS fetch)
+    // Get all project-skill mappings
     @GetMapping
     public List<Map<String, Object>> getAllProjectSkills() {
         List<ProjectSkill> projectSkills = projectSkillService.getAllProjectSkills();
