@@ -63,7 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
           // Close the modal and refresh the projects list
           const editProjectModal = document.getElementById("edit-project-modal")
           if (editProjectModal) {
-            editProjectModal.style.display = "none"
+            // editProjectModal.style.display = "none"
+            editProjectModal.classList.add("hidden")
           }
           loadProjects()
           showPopupMessage("Project updated successfully")
