@@ -144,7 +144,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 })
 
-// Load projects
 function loadProjects() {
   // Fetch skills first to create a skill map
   Promise.all([
@@ -173,7 +172,6 @@ function loadProjects() {
         return map;
       }, {});
 
-      // console.log("User Map:", userMap);
       // Group project skills by project ID
       const projectSkillsMap = projectSkills.reduce((map, ps) => {
         const projectId = ps.project.id;
@@ -185,15 +183,6 @@ function loadProjects() {
         map[projectId].push(skillId);
         return map;
       }, {});
-
-      const projectAssignedToMap = projects.reduce((map, project) => {
-        if (project.assignedTo) {
-          map[project.id] = project.assignedTo.id;
-        }
-        return map;
-      }, {});
-
-      console.log("User Map:", projectSkillsMap);
 
       const tableBody = document.getElementById("projects-table-body");
       if (!tableBody) {
@@ -255,15 +244,26 @@ function loadProjects() {
         }
 
         const assignedToCell = document.createElement("td");
-        const projectAssignedToIds = projectAssignedToMap[project.id] || [];
-        if(projectAssignedToIds.length > 0) {
-
-        }
-        if (project.assignedTo && project.assignedTo.id) {
-          const assignedUserName = userMap[project.assignedTo.id];
-          console.log("Assigned User Name:", assignedUserName);
+        
+        // Display all assigned users - this is the key change
+        if (project.assignedUsers && project.assignedUsers.length > 0) {
+          const usersList = document.createElement("div");
+          usersList.className = "users-list";
           
-          assignedToCell.textContent = assignedUserName || "Unknown User";
+          project.assignedUsers.forEach((userObj, index) => {
+            const userName = userObj.name || userMap[userObj.id] || "Unknown User";
+            const userBadge = document.createElement("span");
+            userBadge.className = "user-badge";
+            userBadge.textContent = userName;
+            
+            usersList.appendChild(userBadge);
+            
+            if (index < project.assignedUsers.length - 1) {
+              usersList.appendChild(document.createTextNode(", "));
+            }
+          });
+          
+          assignedToCell.appendChild(usersList);
         } else {
           assignedToCell.textContent = "Not assigned";
         }
@@ -452,6 +452,9 @@ function openEditProjectModal(projectId) {
       editProjectDescription.value = project.description
       editProjectStatus.value = project.status
 
+      // Load assigned users
+      loadAssignedUsers(projectId);
+
       // Load project skills
       const skillsList = document.getElementById("edit-project-skills-list")
       if (!skillsList) {
@@ -476,10 +479,10 @@ function openEditProjectModal(projectId) {
           deleteBtn.innerHTML = '<i class="fas fa-times"></i>'
           
           deleteBtn.addEventListener("click", function(event) {
-            event.preventDefault() // Prevent default button behavior
-            event.stopPropagation() // Stop event from bubbling up
+            event.preventDefault() 
+            event.stopPropagation()
             
-            // Log to confirm function is triggered
+            // Log to confirm the function is called
             console.log(`Removing skill ${skill.id} from project ${projectId}`)
             
             // Call remove function
@@ -732,7 +735,7 @@ function openAssignProjectModal(projectId) {
       suggestedList.innerHTML = ""
 
       if (nonAdminEmployees.length === 0) {
-        suggestedList.innerHTML = "<p>No suggested non-admin employees found</p>"
+        suggestedList.innerHTML = "<p>No suggested employees found</p>"
         return
       }
 
@@ -839,7 +842,7 @@ function openAssignProjectModal(projectId) {
 
 // Assign project to employee
 function assignProject(projectId, employeeId) {
-  fetch(`http://localhost:8080/api/projects/${projectId}/assign/${employeeId}`, {
+  fetch(`http://localhost:8080/api/projects/${projectId}/users/${employeeId}`, {
     method: "POST",
   })
     .then((response) => {
@@ -865,6 +868,128 @@ function assignProject(projectId, employeeId) {
       console.error("Error assigning project:", error)
       showPopupMessage("Error assigning project: " + error.message, "error")
     })
+}
+
+function loadAssignedUsers(projectId) {
+  fetch(`http://localhost:8080/api/projects/${projectId}/users`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to load assigned users');
+      }
+      return response.json();
+    })
+    .then(users => {
+      const assignedUsersList = document.getElementById("edit-project-assigned-users");
+      if (!assignedUsersList) {
+        console.error("Assigned users list element not found");
+        return;
+      }
+     
+      assignedUsersList.innerHTML = "";
+     
+      if (users && users.length > 0) {
+        users.forEach(user => {
+          const userItem = document.createElement("div");
+          userItem.className = "user-item";
+          userItem.setAttribute("data-user-id", user.id);
+         
+          const userName = document.createElement("span");
+          userName.className = "user-name";
+          userName.textContent = user.name; // Using 'name' from API response
+         
+          const removeBtn = document.createElement("button");
+          removeBtn.className = "btn btn-danger btn-sm";
+          removeBtn.innerHTML = '<i class="fas fa-user-minus"></i>';
+         
+          removeBtn.addEventListener("click", function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+           
+            confirmRemoveUser(projectId, user.id, user.name);
+          });
+          
+          userItem.appendChild(userName);
+          userItem.appendChild(removeBtn);
+          assignedUsersList.appendChild(userItem);
+        });
+      } else {
+        assignedUsersList.innerHTML = "<p>No users assigned</p>";
+      }
+    })
+    .catch(error => {
+      console.error("Error loading assigned users:", error);
+      showPopupMessage("Failed to load assigned users", "error");
+    });
+}
+
+function confirmRemoveUser(projectId, userId, userName) {
+  const confirmationModal = document.getElementById("confirmation-modal");
+  const confirmationMessage = document.getElementById("confirmation-message");
+  const confirmYesBtn = document.getElementById("confirm-yes");
+  const confirmNoBtn = document.getElementById("confirm-no");
+  
+  if (!confirmationModal || !confirmationMessage || !confirmYesBtn) {
+    console.error("One or more confirmation modal elements not found");
+    return;
+  }
+
+  confirmationMessage.textContent = `Are you sure you want to remove ${userName} from this project?`;
+  confirmationModal.style.display = "block";
+
+  // Store the old onclick handler if it exists
+  const oldOnClick = confirmYesBtn.onclick;
+
+  // Set new onclick handler
+  confirmYesBtn.onclick = () => {
+    removeUserFromProject(projectId, userId)
+      .then(() => {
+        // Remove the user item from the DOM
+        const userItem = document.querySelector(`.user-item[data-user-id="${userId}"]`);
+        if (userItem) {
+          userItem.remove();
+        }
+        
+        // Check if there are no more assigned users
+        const assignedUsersList = document.getElementById("edit-project-assigned-users");
+        if (assignedUsersList && assignedUsersList.children.length === 0) {
+          assignedUsersList.innerHTML = "<p>No users assigned</p>";
+        }
+        
+        showPopupMessage(`${userName} has been removed from the project`, "success");
+      })
+      .catch(error => {
+        console.error("Failed to remove user:", error);
+        showPopupMessage("Error removing user from project", "error");
+      })
+      .finally(() => {
+        confirmationModal.style.display = "none";
+      });
+  };
+
+  // Set onclick for No button to just close the modal
+  if (confirmNoBtn) {
+    confirmNoBtn.onclick = () => {
+      confirmationModal.style.display = "none";
+      
+      // Restore the old onclick handler to avoid memory leaks
+      confirmYesBtn.onclick = oldOnClick;
+    };
+  }
+}
+
+// Add this function to handle the removal of a user from a project
+function removeUserFromProject(projectId, userId) {
+  return fetch(`http://localhost:8080/api/projects/${projectId}/users/${userId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to remove user from project');
+    }
+    return response.json();
+  });
 }
 
 // Show popup message

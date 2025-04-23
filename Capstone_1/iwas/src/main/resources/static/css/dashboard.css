@@ -213,6 +213,12 @@ table td {
   border-bottom: 1px solid #ddd;
 }
 
+table td.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Creates equal spacing between all buttons */
+}
+
 table th {
   background-color: #f5f5f5;
   font-weight: bold;
@@ -455,6 +461,13 @@ table tr:hover {
 .report-section h2 {
   color: #4caf50;
   margin-bottom: 15px;
+}
+
+div.user-item{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 10px 15px 5px 10px;
 }
 
 /* Responsive Styles */

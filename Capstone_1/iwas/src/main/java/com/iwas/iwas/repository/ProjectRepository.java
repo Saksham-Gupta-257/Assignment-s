@@ -1,8 +1,9 @@
 package com.iwas.iwas.repository;
 
 import com.iwas.iwas.model.Project;
-import com.iwas.iwas.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,6 +12,6 @@ import java.util.List;
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findByStatus(String status);
     
-    List<Project> findByAssignedTo(User user);
+    @Query("SELECT p FROM Project p JOIN p.assignedUsers pa WHERE pa.user.id = :userId")
+    List<Project> findProjectsByUserId(@Param("userId") Long userId);
 }
-
