@@ -3,7 +3,6 @@ package com.iwas.iwas.controller;
 import com.iwas.iwas.model.ProjectSkill;
 import com.iwas.iwas.service.ProjectSkillService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -1,6 +1,5 @@
 package com.iwas.iwas.controller;
 
-import com.iwas.iwas.model.Skill;
 import com.iwas.iwas.model.UserSkill;
 import com.iwas.iwas.service.UserSkillService;
 import org.springframework.beans.factory.annotation.Autowired;
