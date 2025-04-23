@@ -232,7 +232,7 @@ function loadProjects() {
           
             skillsList.appendChild(skillBadge);
           
-            // Add a comma if it's NOT the last skill
+            // Add a comma if it's not the last skill
             if (index < uniqueSkillIds.length - 1) {
               skillsList.appendChild(document.createTextNode(", "));
             }
@@ -245,7 +245,7 @@ function loadProjects() {
 
         const assignedToCell = document.createElement("td");
         
-        // Display all assigned users - this is the key change
+        // Display all assigned users
         if (project.assignedUsers && project.assignedUsers.length > 0) {
           const usersList = document.createElement("div");
           usersList.className = "users-list";
@@ -325,7 +325,7 @@ function loadSkills() {
 
       const populateSelect = (selectElement) => {
         if (selectElement) {
-          selectElement.innerHTML = "" // Clear existing options
+          selectElement.innerHTML = "" 
           
           // Add a default "Select a skill" option
           const defaultOption = document.createElement("option")
@@ -374,16 +374,13 @@ function addProject(name, description) {
       return response.json()
     })
     .then((project) => {
-      // Store project ID for adding skills
       const addProjectForm = document.getElementById("add-project-form")
       if (addProjectForm) {
         addProjectForm.setAttribute("data-project-id", project.id)
       }
 
-      // Add skills to project
       const skillsList = document.getElementById("project-skills-list")
 
-      // Check if skillsList exists before trying to use it
       if (skillsList) {
         const skillItems = skillsList.querySelectorAll(".skill-item")
         const addSkillPromises = []
@@ -400,7 +397,6 @@ function addProject(name, description) {
         }
       }
 
-      // If there are no skills or the skillsList doesn't exist, just return the project
       return project
     })
     .then(() => {
@@ -409,13 +405,11 @@ function addProject(name, description) {
         addProjectModal.style.display = "none"
       }
 
-      // Reset the form safely
       const addProjectForm = document.getElementById("add-project-form")
       if (addProjectForm) {
         addProjectForm.reset()
       }
 
-      // Clear skills list if it exists
       const skillsList = document.getElementById("project-skills-list")
       if (skillsList) {
         skillsList.innerHTML = ""
@@ -482,7 +476,6 @@ function openEditProjectModal(projectId) {
             event.preventDefault() 
             event.stopPropagation()
             
-            // Log to confirm the function is called
             console.log(`Removing skill ${skill.id} from project ${projectId}`)
             
             // Call remove function
@@ -604,15 +597,12 @@ function addProjectSkill(projectId, skillId) {
       return response.json()
     })
     .then((skill) => {
-      // If editing a project, refresh the skills list
       const editProjectModal = document.getElementById("edit-project-modal")
       if (editProjectModal && editProjectModal.style.display === "block") {
         openEditProjectModal(projectId)
       } else {
-        // Add skill to the list in the add project modal
         const skillsList = document.getElementById("project-skills-list")
         if (skillsList) {
-          // Check if "No skills required" message is present
           if (skillsList.innerHTML.includes("No skills required")) {
             skillsList.innerHTML = ""
           }
@@ -631,7 +621,6 @@ function addProjectSkill(projectId, skillId) {
           deleteBtn.addEventListener("click", () => {
             skillItem.remove()
 
-            // If no skills left, show message
             if (skillsList.children.length === 0) {
               skillsList.innerHTML = "<p>No skills required</p>"
             }
@@ -668,7 +657,6 @@ function removeProjectSkill(projectId, skillId) {
       return response.text()
     })
     .then(() => {
-      // Show success message
       showPopupMessage("Skill removed successfully")
       
       return Promise.resolve()
@@ -688,7 +676,6 @@ function openAssignProjectModal(projectId) {
     return
   }
 
-  // Set active tab to suggested
   document.querySelectorAll(".tab-btn").forEach((btn) => {
     btn.classList.remove("active")
   })
@@ -721,7 +708,6 @@ function openAssignProjectModal(projectId) {
       ])
     )
     .then(([employees, userSkills, users]) => {
-      // Filter out admin users
       const nonAdminEmployees = employees.filter(employee => 
         !users.find(user => user.id === employee.id && user.role === 'ADMIN')
       )
@@ -746,14 +732,11 @@ function openAssignProjectModal(projectId) {
         const employeeInfo = document.createElement("div")
         employeeInfo.className = "employee-info"
         
-        // Filter user skills for this employee
         const employeeSkills = userSkills.filter(us => us.userId === employee.id)
 
-        // Create matched skills display with ratings
         const matchedSkillsHtml = employee.transientMatchedSkills
           ? employee.transientMatchedSkills
               .map(skill => {
-                // Find the rating for this skill
                 const skillRating = employeeSkills.find(us => us.skillId === skill.id)?.rating || 0
 
                 return `
@@ -895,7 +878,7 @@ function loadAssignedUsers(projectId) {
          
           const userName = document.createElement("span");
           userName.className = "user-name";
-          userName.textContent = user.name; // Using 'name' from API response
+          userName.textContent = user.name;
          
           const removeBtn = document.createElement("button");
           removeBtn.className = "btn btn-danger btn-sm";
@@ -936,14 +919,12 @@ function confirmRemoveUser(projectId, userId, userName) {
   confirmationMessage.textContent = `Are you sure you want to remove ${userName} from this project?`;
   confirmationModal.style.display = "block";
 
-  // Store the old onclick handler if it exists
   const oldOnClick = confirmYesBtn.onclick;
 
   // Set new onclick handler
   confirmYesBtn.onclick = () => {
     removeUserFromProject(projectId, userId)
       .then(() => {
-        // Remove the user item from the DOM
         const userItem = document.querySelector(`.user-item[data-user-id="${userId}"]`);
         if (userItem) {
           userItem.remove();
@@ -966,12 +947,10 @@ function confirmRemoveUser(projectId, userId, userName) {
       });
   };
 
-  // Set onclick for No button to just close the modal
   if (confirmNoBtn) {
     confirmNoBtn.onclick = () => {
       confirmationModal.style.display = "none";
       
-      // Restore the old onclick handler to avoid memory leaks
       confirmYesBtn.onclick = oldOnClick;
     };
   }
@@ -994,7 +973,6 @@ function removeUserFromProject(projectId, userId) {
 
 // Show popup message
 function showPopupMessage(message, type = "success") {
-  // Create popup element if it doesn't exist
   let popup = document.getElementById("popup-message")
   if (!popup) {
     popup = document.createElement("div")
