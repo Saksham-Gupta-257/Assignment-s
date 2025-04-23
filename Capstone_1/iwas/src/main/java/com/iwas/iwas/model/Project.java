@@ -20,10 +20,9 @@ public class Project {
     
     private String status; // "ACTIVE", "COMPLETED"
     
-    @ManyToOne
-    @JoinColumn(name = "assigned_to")
-    @JsonBackReference(value="user-project-reference")
-    private User assignedTo;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value="project-assignment-reference")
+    private Set<ProjectAssignment> assignedUsers = new HashSet<>();
     
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value="project-skill-reference")
@@ -71,14 +70,6 @@ public class Project {
         this.status = status;
     }
 
-    public User getAssignedTo() {
-        return assignedTo;
-    }
-
-    public void setAssignedTo(User assignedTo) {
-        this.assignedTo = assignedTo;
-    }
-
     public Set<ProjectSkill> getRequiredSkills() {
         return requiredSkills;
     }
@@ -86,4 +77,30 @@ public class Project {
     public void setRequiredSkills(Set<ProjectSkill> requiredSkills) {
         this.requiredSkills = requiredSkills;
     }
+
+    public Set<ProjectAssignment> getAssignedUsers() {
+        return assignedUsers;
+    }
+
+    public void setAssignedUsers(Set<ProjectAssignment> assignedUsers) {
+        this.assignedUsers = assignedUsers;
+    }
+    
+    public void addUser(User user) {
+        ProjectAssignment assignment = new ProjectAssignment(user, this);
+        assignedUsers.add(assignment);
+        user.getProjectAssignments().add(assignment);
+    }
+    
+    public void removeUser(User user) {
+        for (ProjectAssignment assignment : new HashSet<>(assignedUsers)) {
+            if (assignment.getUser().equals(user)) {
+                assignedUsers.remove(assignment);
+                user.getProjectAssignments().remove(assignment);
+                assignment.setProject(null);
+                assignment.setUser(null);
+            }
+        }
+    }
+    
 }

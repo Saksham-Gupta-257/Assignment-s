@@ -33,9 +33,9 @@ public class User {
     @JsonManagedReference(value="user-leave-reference")
     private Set<LeaveRequest> leaveRequests = new HashSet<>();
     
-    @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL)
-    @JsonManagedReference(value="user-project-reference")
-    private Set<Project> assignedProjects = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value="user-assignment-reference")
+    private Set<ProjectAssignment> projectAssignments = new HashSet<>();
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value="user-notification-reference")
@@ -117,14 +117,6 @@ public class User {
         this.leaveRequests = leaveRequests;
     }
 
-    public Set<Project> getAssignedProjects() {
-        return assignedProjects;
-    }
-
-    public void setAssignedProjects(Set<Project> assignedProjects) {
-        this.assignedProjects = assignedProjects;
-    }
-
     public Set<Notification> getNotifications() {
         return notifications;
     }
@@ -132,6 +124,23 @@ public class User {
     public void setNotifications(Set<Notification> notifications) {
         this.notifications = notifications;
     }
+
+    public Set<ProjectAssignment> getProjectAssignments() {
+        return projectAssignments;
+    }
+
+    public void setProjectAssignments(Set<ProjectAssignment> projectAssignments) {
+        this.projectAssignments = projectAssignments;
+    }
+    
+    public Set<Project> getAssignedProjects() {
+        Set<Project> projects = new HashSet<>();
+        for (ProjectAssignment assignment : projectAssignments) {
+            projects.add(assignment.getProject());
+        }
+        return projects;
+    }
+
 
     @Transient
     private List<Skill> transientMatchedSkills;

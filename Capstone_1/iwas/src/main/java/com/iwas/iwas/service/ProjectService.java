@@ -1,18 +1,16 @@
 package com.iwas.iwas.service;
 
-import com.iwas.iwas.model.Project;
-import com.iwas.iwas.model.ProjectSkill;
-import com.iwas.iwas.model.Skill;
-import com.iwas.iwas.model.User;
+import com.iwas.iwas.model.*;
+import com.iwas.iwas.repository.ProjectAssignmentRepository;
 import com.iwas.iwas.repository.ProjectRepository;
 import com.iwas.iwas.repository.ProjectSkillRepository;
 import com.iwas.iwas.repository.UserRepository;
-import com.iwas.iwas.service.UserSkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +30,9 @@ public class ProjectService {
     
     @Autowired
     private NotificationService notificationService;
+    
+    @Autowired
+    private ProjectAssignmentRepository projectAssignmentRepository;
     
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
@@ -56,9 +57,10 @@ public class ProjectService {
         if (existingProject.isPresent() && 
             "COMPLETED".equals(project.getStatus())) {
         
-            // If project is being marked as completed and has an assigned user
-            User assignedUser = existingProject.get().getAssignedTo();
-            if (assignedUser != null) {
+            // If project is being marked as completed, update status of all assigned users
+            Project currentProject = existingProject.get();
+            for (ProjectAssignment assignment : currentProject.getAssignedUsers()) {
+                User assignedUser = assignment.getUser();
                 // Update user status to ON_BENCH
                 assignedUser.setStatus("ON_BENCH");
                 userRepository.save(assignedUser);
@@ -72,7 +74,7 @@ public class ProjectService {
         projectRepository.deleteById(id);
     }
     
-    public Project assignProject(Long projectId, Long userId) {
+    public Project assignUserToProject(Long projectId, Long userId) {
         Optional<Project> projectOpt = projectRepository.findById(projectId);
         Optional<User> userOpt = userRepository.findById(userId);
         
@@ -80,19 +82,57 @@ public class ProjectService {
             Project project = projectOpt.get();
             User user = userOpt.get();
             
-            // Update project
-            project.setAssignedTo(user);
-            
-            // Update user status
-            user.setStatus("IN_PROJECT");
-            userRepository.save(user);
-            
-            // Create notification
-            notificationService.createNotification(user, "You have been assigned to project: " + project.getName());
-            
-            return projectRepository.save(project);
+            // Check if user is already assigned to this project
+            boolean alreadyAssigned = project.getAssignedUsers().stream()
+                .anyMatch(assignment -> assignment.getUser().getId().equals(userId));
+                
+            if (!alreadyAssigned) {
+                // Create new assignment
+                ProjectAssignment assignment = new ProjectAssignment(user, project);
+                project.getAssignedUsers().add(assignment);
+                
+                // Update user status
+                user.setStatus("IN_PROJECT");
+                userRepository.save(user);
+                
+                // Create notification
+                notificationService.createNotification(user, "You have been assigned to project: " + project.getName());
+                
+                return projectRepository.save(project);
+            }
         }
         return null;
+    }
+    
+    public void removeUserFromProject(Long projectId, Long userId) {
+        Optional<Project> projectOpt = projectRepository.findById(projectId);
+        Optional<User> userOpt = userRepository.findById(userId);
+        
+        if (projectOpt.isPresent() && userOpt.isPresent()) {
+            Project project = projectOpt.get();
+            User user = userOpt.get();
+            
+            // Find and remove the assignment
+            for (ProjectAssignment assignment : new java.util.HashSet<>(project.getAssignedUsers())) {
+                if (assignment.getUser().getId().equals(userId)) {
+                    project.getAssignedUsers().remove(assignment);
+                    user.getProjectAssignments().remove(assignment);
+                    projectAssignmentRepository.delete(assignment);
+                    
+                    // Update user status if they have no other projects
+                    if (user.getProjectAssignments().isEmpty()) {
+                        user.setStatus("ON_BENCH");
+                        userRepository.save(user);
+                    }
+                    
+                    // Create notification
+                    notificationService.createNotification(user, "You have been removed from project: " + project.getName());
+                    
+                    projectRepository.save(project);
+                    break;
+                }
+            }
+        }
     }
     
     public List<User> suggestEmployeesForProject(Long projectId) {
@@ -107,6 +147,15 @@ public class ProjectService {
         
             // Find employees with matching skills
             List<User> suggestedEmployees = userSkillService.findEmployeesWithSkills(skillIds);
+            
+            // Filter out users already assigned to this project
+            Set<Long> assignedUserIds = project.getAssignedUsers().stream()
+                .map(assignment -> assignment.getUser().getId())
+                .collect(Collectors.toSet());
+                
+            suggestedEmployees = suggestedEmployees.stream()
+                .filter(user -> !assignedUserIds.contains(user.getId()))
+                .collect(Collectors.toList());
         
             suggestedEmployees.forEach(user -> {
                 // Filter and mark matched skills for this user
@@ -128,9 +177,26 @@ public class ProjectService {
         return List.of();
     }
     
+    public List<User> getAssignedUsers(Long projectId) {
+        Optional<Project> projectOpt = projectRepository.findById(projectId);
+        if (projectOpt.isPresent()) {
+            Project project = projectOpt.get();
+            return project.getAssignedUsers().stream()
+                .map(ProjectAssignment::getUser)
+                .collect(Collectors.toList());
+        }
+        return List.of();
+    }
+    
     public List<Project> getUserProjects(Long userId) {
         Optional<User> userOpt = userRepository.findById(userId);
-        return userOpt.map(projectRepository::findByAssignedTo).orElse(List.of());
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            return user.getProjectAssignments().stream()
+                .map(ProjectAssignment::getProject)
+                .collect(Collectors.toList());
+        }
+        return List.of();
     }
     
     public ProjectSkill addProjectSkill(Long projectId, Long skillId) {
@@ -165,4 +231,3 @@ public class ProjectService {
         }
     }
 }
-

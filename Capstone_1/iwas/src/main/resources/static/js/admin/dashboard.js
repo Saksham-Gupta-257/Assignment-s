@@ -27,6 +27,7 @@ function loadDashboardStats() {
 }
 
 // Load active projects
+// Load active projects
 function loadActiveProjects() {
   fetch("http://localhost:8080/api/projects")
     .then((response) => response.json())
@@ -58,8 +59,26 @@ function loadActiveProjects() {
         descriptionCell.textContent = project.description
 
         const assignedToCell = document.createElement("td")
-        if (project.assignedTo) {
-          assignedToCell.textContent = project.assignedTo.name
+        
+        // Display all assigned users
+        if (project.assignedUsers && project.assignedUsers.length > 0) {
+          const usersList = document.createElement("div")
+          usersList.className = "users-list"
+          
+          project.assignedUsers.forEach((userObj, index) => {
+            const userName = userObj.name || "Unknown User"
+            const userBadge = document.createElement("span")
+            userBadge.className = "user-badge"
+            userBadge.textContent = userName
+            
+            usersList.appendChild(userBadge)
+            
+            if (index < project.assignedUsers.length - 1) {
+              usersList.appendChild(document.createTextNode(", "))
+            }
+          })
+          
+          assignedToCell.appendChild(usersList)
         } else {
           assignedToCell.textContent = "Not assigned"
         }
