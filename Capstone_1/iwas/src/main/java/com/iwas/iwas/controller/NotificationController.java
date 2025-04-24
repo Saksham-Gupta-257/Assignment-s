@@ -31,9 +31,7 @@ public class NotificationController {
             User user = userOpt.get();
             List<Notification> notifications = notificationService.getUserNotifications(userId, user);
             
-            List<Map<String, Object>> response = notifications.stream()
-                    .map(this::mapNotificationToResponse)
-                    .collect(Collectors.toList());
+            List<Map<String, Object>> response = notifications.stream().map(this::mapNotificationToResponse).collect(Collectors.toList());
             
             return ResponseEntity.ok(response);
         }
@@ -48,9 +46,7 @@ public class NotificationController {
             User user = userOpt.get();
             List<Notification> notifications = notificationService.getUnreadNotifications(user);
             
-            List<Map<String, Object>> response = notifications.stream()
-                    .map(this::mapNotificationToResponse)
-                    .collect(Collectors.toList());
+            List<Map<String, Object>> response = notifications.stream().map(this::mapNotificationToResponse).collect(Collectors.toList());
             
             return ResponseEntity.ok(response);
         }

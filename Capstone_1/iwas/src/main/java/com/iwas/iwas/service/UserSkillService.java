@@ -15,21 +15,21 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserSkillService {
-    
+
     @Autowired
     private UserSkillRepository userSkillRepository;
-    
+
     @Autowired
     private UserRepository userRepository;
-    
+
     @Autowired
     private SkillRepository skillRepository;
-    
+
     public List<UserSkill> getUserSkills(Long userId) {
         Optional<User> userOpt = userRepository.findById(userId);
         return userOpt.map(userSkillRepository::findByUser).orElse(List.of());
     }
-    
+
     public Optional<UserSkill> getUserSkill(Long id) {
         return userSkillRepository.findById(id);
     }
@@ -37,15 +37,15 @@ public class UserSkillService {
     public Optional<Skill> getSkillById(Long id) {
         return skillRepository.findById(id);
     }
-    
+
     public UserSkill addUserSkill(Long userId, Long skillId, Integer rating) {
         Optional<User> userOpt = userRepository.findById(userId);
         Optional<Skill> skillOpt = skillRepository.findById(skillId);
-        
+
         if (userOpt.isPresent() && skillOpt.isPresent()) {
             User user = userOpt.get();
             Skill skill = skillOpt.get();
-            
+
             Optional<UserSkill> existingSkill = userSkillRepository.findByUserAndSkill(user, skill);
             if (existingSkill.isPresent()) {
                 UserSkill userSkill = existingSkill.get();
@@ -58,7 +58,7 @@ public class UserSkillService {
         }
         return null;
     }
-    
+
     public UserSkill updateUserSkill(Long id, Integer rating) {
         Optional<UserSkill> userSkillOpt = userSkillRepository.findById(id);
         if (userSkillOpt.isPresent()) {
@@ -68,21 +68,17 @@ public class UserSkillService {
         }
         return null;
     }
-    
+
     public void deleteUserSkill(Long id) {
         userSkillRepository.deleteById(id);
     }
-    
+
     public List<User> findEmployeesWithSkills(List<Long> skillIds) {
         List<UserSkill> userSkills = userSkillRepository.findTopUsersBySkills(skillIds);
-        return userSkills.stream()
-                .map(UserSkill::getUser)
-                .distinct()
-                .collect(Collectors.toList());
+        return userSkills.stream().map(UserSkill::getUser).distinct().collect(Collectors.toList());
     }
 
     public List<UserSkill> getAllUserSkills() {
         return userSkillRepository.findAll();
     }
 }
-
