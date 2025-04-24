@@ -60,7 +60,6 @@ function loadPastProjects() {
             const skillBadge = document.createElement("span")
             skillBadge.className = "skill-badge"
             
-            // Use the skill map to get skill name, fallback to skill.name
             skillBadge.textContent = skillMap[skill.id] || skill.name
             skillsList.appendChild(skillBadge)
 
