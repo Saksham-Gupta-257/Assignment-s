@@ -167,18 +167,32 @@ function signup(name, email, password) {
 
 // Logout function
 function logout() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  
   fetch("http://localhost:8080/api/auth/logout", {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    // Send user email to ensure proper session removal
+    body: user ? JSON.stringify({ email: user.email }) : "{}"
   })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+      return response.text();
+    })
     .then(() => {
-      localStorage.removeItem("user")
-      window.location.href = "/Capstone_1/iwas/src/main/resources/static/index.html"
+      localStorage.removeItem("user");
+      window.location.href = "/Capstone_1/iwas/src/main/resources/static/index.html";
     })
     .catch((error) => {
-      console.error("Logout error:", error)
-      localStorage.removeItem("user")
-      window.location.href = "/Capstone_1/iwas/src/main/resources/static/index.html"
-    })
+      console.error("Logout error:", error);
+      // Still remove from localStorage to allow re-login
+      localStorage.removeItem("user");
+      window.location.href = "/Capstone_1/iwas/src/main/resources/static/index.html";
+    });
 }
 
 // Show error message
