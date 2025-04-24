@@ -957,7 +957,6 @@ function confirmRemoveUser(projectId, userId, userName) {
   }
 }
 
-// Add this function to handle the removal of a user from a project
 function removeUserFromProject(projectId, userId) {
   return fetch(`http://localhost:8080/api/projects/${projectId}/users/${userId}`, {
     method: 'DELETE',

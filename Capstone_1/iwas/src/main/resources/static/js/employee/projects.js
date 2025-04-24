@@ -88,36 +88,3 @@ function loadCurrentProject() {
       console.error("Error loading current project:", error)
     })
 }
-
-// Show popup message
-function showPopupMessage(message, type = "success") {
-  // Create popup element if it doesn't exist
-  let popup = document.getElementById("popup-message")
-  if (!popup) {
-    popup = document.createElement("div")
-    popup.id = "popup-message"
-    document.body.appendChild(popup)
-
-    // Add styles
-    popup.style.position = "fixed"
-    popup.style.bottom = "20px"
-    popup.style.right = "20px"
-    popup.style.padding = "10px 20px"
-    popup.style.borderRadius = "4px"
-    popup.style.color = "white"
-    popup.style.zIndex = "9999"
-    popup.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.2)"
-  }
-
-  // Set message and type
-  popup.textContent = message
-  popup.style.backgroundColor = type === "success" ? "#4caf50" : "#f44336"
-
-  // Show popup
-  popup.style.display = "block"
-
-  // Hide popup after 3 seconds
-  setTimeout(() => {
-    popup.style.display = "none"
-  }, 3000)
-}
