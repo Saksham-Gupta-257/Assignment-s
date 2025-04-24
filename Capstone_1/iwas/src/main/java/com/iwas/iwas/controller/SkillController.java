@@ -24,8 +24,7 @@ public class SkillController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getSkillById(@PathVariable Long id) {
         Optional<Skill> skillOpt = skillService.getSkillById(id);
-        return skillOpt.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return skillOpt.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
     
     @PostMapping

@@ -27,7 +27,6 @@ function loadDashboardStats() {
 }
 
 // Load active projects
-// Load active projects
 function loadActiveProjects() {
   fetch("http://localhost:8080/api/projects")
     .then((response) => response.json())

@@ -11,12 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@RestController
+@RestController // Makes a class a controller where every method returns JSON
 @RequestMapping("/api/auth")
 public class AuthController {
     
     @Autowired
     private UserService userService;
+
+    private static final Map<String, String> activeSessions = new HashMap<>();
     
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> credentials, HttpSession session) {
@@ -40,6 +42,13 @@ public class AuthController {
             // Check password
             if (userService.authenticate(email, password)) {
                 // Store user in session
+
+                String existingSessionId = activeSessions.get(email);
+                if (existingSessionId != null && !existingSessionId.equals(session.getId())) {
+                    return ResponseEntity.status(403).body("User already logged in on another device or browser");
+                }
+                activeSessions.put(email, session.getId());
+
                 session.setAttribute("userId", user.getId());
                 session.setAttribute("userRole", user.getRole());
                 
@@ -89,6 +98,15 @@ public class AuthController {
     
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId != null) {
+            Optional<User> userOpt = userService.getUserById(userId);
+            if (userOpt.isPresent()) {
+                // Remove from active sessions map
+                activeSessions.remove(userOpt.get().getEmail());
+            }
+        }
+        
         session.invalidate();
         return ResponseEntity.ok("Logged out successfully");
     }

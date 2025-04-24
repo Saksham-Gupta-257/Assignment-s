@@ -28,9 +28,7 @@ public class LeaveRequestController {
     @GetMapping
     public ResponseEntity<List<Map<String, Object>>> getAllLeaveRequests() {
         List<LeaveRequest> requests = leaveRequestService.getAllLeaveRequests();
-        List<Map<String, Object>> response = requests.stream()
-                .map(this::mapLeaveRequestToResponse)
-                .collect(Collectors.toList());
+        List<Map<String, Object>> response = requests.stream().map(this::mapLeaveRequestToResponse).collect(Collectors.toList());
         
         return ResponseEntity.ok(response);
     }
@@ -38,9 +36,7 @@ public class LeaveRequestController {
     @GetMapping("/pending")
     public ResponseEntity<List<Map<String, Object>>> getPendingLeaveRequests() {
         List<LeaveRequest> requests = leaveRequestService.getPendingLeaveRequests();
-        List<Map<String, Object>> response = requests.stream()
-                .map(this::mapLeaveRequestToResponse)
-                .collect(Collectors.toList());
+        List<Map<String, Object>> response = requests.stream().map(this::mapLeaveRequestToResponse).collect(Collectors.toList());
         
         return ResponseEntity.ok(response);
     }
@@ -48,16 +44,14 @@ public class LeaveRequestController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getLeaveRequestById(@PathVariable Long id) {
         Optional<LeaveRequest> requestOpt = leaveRequestService.getLeaveRequestById(id);
-        return requestOpt.map(request -> ResponseEntity.ok(mapLeaveRequestToResponse(request)))
-                .orElse(ResponseEntity.notFound().build());
+
+        return requestOpt.map(request -> ResponseEntity.ok(mapLeaveRequestToResponse(request))).orElse(ResponseEntity.notFound().build());
     }
     
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Map<String, Object>>> getUserLeaveRequests(@PathVariable Long userId) {
         List<LeaveRequest> requests = leaveRequestService.getUserLeaveRequests(userId);
-        List<Map<String, Object>> response = requests.stream()
-                .map(this::mapLeaveRequestToResponse)
-                .collect(Collectors.toList());
+        List<Map<String, Object>> response = requests.stream().map(this::mapLeaveRequestToResponse).collect(Collectors.toList());
         
         return ResponseEntity.ok(response);
     }
