@@ -1,0 +1,5 @@
+print("Enter Name:")
+name = input()
+print("Enter Age:")
+age = input()
+print("Hello " + age + " year old " + name)
