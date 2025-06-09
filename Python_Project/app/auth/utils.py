@@ -1,6 +1,6 @@
 from passlib.context import CryptContext
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -35,4 +35,4 @@ def generate_reset_token():
     return str(uuid.uuid4())
 
 def get_token_expiration(minutes=30):
-    return datetime.utcnow() + timedelta(minutes=minutes)
+    return datetime.now(timezone.utc) + timedelta(minutes=minutes)

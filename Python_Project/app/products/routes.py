@@ -6,7 +6,6 @@ from app.middlewares.dependencies import require_roles
 from app.auth.models import UserRole
 from fastapi_pagination import Page, Params
 from fastapi_pagination.ext.sqlalchemy import paginate
-from app.middlewares.dependencies import require_roles
 
 router = APIRouter(prefix="/admin/products", tags=["admin_products"])
 
@@ -23,6 +22,9 @@ def get_db():
 
 @router.post("/", response_model=schemas.ProductOut)
 def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db), current_user=Depends(require_roles([UserRole.admin]))):
+    existing_product = db.query(models.Product).filter(models.Product.name == product.name).first()
+    if existing_product:
+        raise HTTPException(status_code=400, detail="Product with this name already exists")
     db_product = models.Product(
         name=product.name,
         description=product.description,
@@ -40,3 +42,31 @@ def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)
 def get_products(params: Params = Depends(), db: Session = Depends(get_db), current_user=Depends(require_roles([UserRole.admin]))):
     query = db.query(models.Product)
     return paginate(query, params)
+
+@router.get("/{product_id}", response_model=schemas.ProductOut)
+def get_product(product_id: int, db: Session = Depends(get_db), current_user=Depends(require_roles([UserRole.admin]))):
+    product = db.query(models.Product).filter(models.Product.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return product
+
+@router.put("/{product_id}", response_model=schemas.ProductOut)
+def update_product(product_id: int, updated: schemas.ProductUpdate, db: Session = Depends(get_db),current_user=Depends(require_roles([UserRole.admin]))):
+    product = db.query(models.Product).filter(models.Product.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    update_data = updated.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(product, key, value)
+    db.commit()
+    db.refresh(product)
+    return product
+
+@router.delete("/{product_id}")
+def delete_product(product_id: int, db: Session = Depends(get_db), current_user=Depends(require_roles([UserRole.admin]))):
+    product = db.query(models.Product).filter(models.Product.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    db.delete(product)
+    db.commit()
+    return {"message": "Product deleted successfully"}

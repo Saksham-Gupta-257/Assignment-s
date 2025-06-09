@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from app.core.database import Base
+from enum import Enum
 
 class Product(Base):
     __tablename__ = "products"

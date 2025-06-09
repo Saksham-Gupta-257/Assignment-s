@@ -13,7 +13,7 @@ EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
 def send_email(to_email: str, subject: str, body: str):
     msg = MIMEMultipart()
-    msg["From"] = "saksham.gupta.2507@gmail.com"  # replace with your sender email/domain
+    msg["From"] = "saksham.gupta.2507@gmail.com"
     msg["To"] = to_email
     msg["Subject"] = subject
     msg.attach(MIMEText(body, "plain"))
@@ -23,6 +23,6 @@ def send_email(to_email: str, subject: str, body: str):
             server.starttls()
             server.login(EMAIL_USER, EMAIL_PASSWORD)
             server.sendmail(msg["From"], to_email, msg.as_string())
-        print(f"✅ Email sent to {to_email}")
+        print(f"Email sent to {to_email}")
     except Exception as e:
-        print(f"❌ Failed to send email: {e}")
+        print(f"Failed to send email: {e}")

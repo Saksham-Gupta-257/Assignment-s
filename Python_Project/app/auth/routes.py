@@ -48,7 +48,6 @@ def signin(credentials: schemas.LoginRequest,response: Response,  db: Session = 
     if not user or not verify_password(credentials.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    # Create JWT token
     access_token = create_access_token(data={"sub": str(user.id), "role": user.role})
     refresh_token = create_refresh_token(data={"sub": str(user.id), "role": user.role})
     response.set_cookie(
@@ -83,7 +82,6 @@ def forgot_password(req: ForgotPasswordRequest, db: Session = Depends(get_db)):
     db.add(db_token)
     db.commit()
 
-    # Send email with token
     subject = "Reset Your Password"
     body = f"Hi {user.name},\n\nUse the following token to reset your password:\n\n{token}\n\nThis token is valid for 30 minutes."
     send_email(user.email, subject, body)
