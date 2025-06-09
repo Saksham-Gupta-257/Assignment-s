@@ -1,3 +1,0 @@
-This is a sample file used in file handling.
-This assignment is being completed by Saksham Gupta.
-Saksham is a C++ game developer currently learning Python.
