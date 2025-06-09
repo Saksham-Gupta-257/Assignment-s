@@ -1,0 +1,10 @@
+def divide(num1, num2):
+    try:
+        return num1 / num2
+    except ZeroDivisionError as e:
+        raise ValueError("Invalid operation") from e
+
+try:
+    print(divide(10, 0))
+except Exception as e:
+    print("Caught:", e)

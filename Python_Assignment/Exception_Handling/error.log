@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "d:\Code's\Assignment-s\Python_Assignment\Exception_Handling\7_LETF.py", line 4, in <module>
+    1 / 0
+    ~~^~~
+ZeroDivisionError: division by zero
