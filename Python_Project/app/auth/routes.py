@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Response
 from sqlalchemy.orm import Session
 from app.core.database import SessionLocal, engine, Base
 from app.auth import models, schemas, utils
@@ -43,7 +43,7 @@ def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return db_user
 
 @router.post("/signin")
-def signin(credentials: schemas.LoginRequest, db: Session = Depends(get_db)):
+def signin(credentials: schemas.LoginRequest,response: Response,  db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == credentials.email).first()
     if not user or not verify_password(credentials.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
@@ -51,6 +51,13 @@ def signin(credentials: schemas.LoginRequest, db: Session = Depends(get_db)):
     # Create JWT token
     access_token = create_access_token(data={"sub": str(user.id), "role": user.role})
     refresh_token = create_refresh_token(data={"sub": str(user.id), "role": user.role})
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=True, 
+        samesite="Lax"
+    )
     return {
         "message": "Sign in successful!",
         "access_token": access_token,
@@ -119,4 +126,3 @@ def reset_password(req: ResetPasswordRequest, db: Session = Depends(get_db)):
     db.commit()
 
     return {"message": "Password reset successful"}
-
