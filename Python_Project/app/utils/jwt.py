@@ -1,0 +1,54 @@
+from jose import JWTError, jwt
+from datetime import datetime, timedelta, timezone
+import os
+from dotenv import load_dotenv
+from typing import Optional
+
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_SECONDS = int(os.getenv("ACCESS_TOKEN_EXPIRE_SECONDS"))
+REFRESH_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
+
+def create_access_token(data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(seconds=ACCESS_TOKEN_EXPIRE_SECONDS))
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+def create_refresh_token(data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(days=REFRESH_EXPIRE_DAYS))
+    to_encode.update({"type": "refresh_token"})
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+def decode_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except JWTError:
+        return None
+
+def is_token_valid(token: str) -> bool:
+    try:
+        payload = jwt.get_unverified_claims(token)
+        exp = payload.get("exp")
+        if exp is None:
+            return True
+        return datetime.now(timezone.utc) > datetime.fromtimestamp(exp, tz=timezone.utc)
+    except JWTError:
+        return True
+    
+def verify_refresh_token(token: str) -> Optional[dict]:
+    try:
+        payload = decode_token(token)
+        if payload.get("type") != "refresh_token":
+            print("Invalid token type")
+            return None
+        return payload
+    except JWTError:
+        return None
