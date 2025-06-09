@@ -88,9 +88,6 @@ def update_cart_item(product_id: int, updated: schemas.CartItemUpdate, db: Sessi
     if not cart_item:
         raise HTTPException(status_code=404, detail="Cart item not found")
     
-    if updated.quantity > existing_product.stock:
-        raise HTTPException(status_code=400, detail="Quantity exceeds available stock")
-    
     update_data = updated.dict(exclude_unset=True)
     for key, value in update_data.items():
         if key == "quantity" and value > existing_product.stock:
