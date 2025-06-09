@@ -9,10 +9,8 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 
 router = APIRouter(prefix="/admin/products", tags=["admin_products"])
 
-# Create tables
 Base.metadata.create_all(bind=engine)
 
-# Dependency
 def get_db():
     db = SessionLocal()
     try:
