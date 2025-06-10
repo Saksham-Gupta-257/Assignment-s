@@ -25,6 +25,7 @@ def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)
         raise HTTPException(status_code=400, detail="Product with this name already exists")
     db_product = models.Product(
         name=product.name,
+        admin_id=current_user.id,
         description=product.description,
         price=product.price,
         stock=product.stock,
@@ -38,22 +39,34 @@ def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)
 
 @router.get("/", response_model=Page[schemas.ProductOut])
 def get_products(params: Params = Depends(), db: Session = Depends(get_db), current_user=Depends(require_roles([UserRole.admin]))):
+
     query = db.query(models.Product)
+    query = query.filter(models.Product.admin_id == current_user.id)
     return paginate(query, params)
 
 @router.get("/{product_id}", response_model=schemas.ProductOut)
 def get_product(product_id: int, db: Session = Depends(get_db), current_user=Depends(require_roles([UserRole.admin]))):
+    
     product = db.query(models.Product).filter(models.Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
+    if product.admin_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Product is not listed under this admin, Please add this in your listing")
     return product
 
 @router.put("/{product_id}", response_model=schemas.ProductOut)
 def update_product(product_id: int, updated: schemas.ProductUpdate, db: Session = Depends(get_db),current_user=Depends(require_roles([UserRole.admin]))):
+    
     product = db.query(models.Product).filter(models.Product.id == product_id).first()
+
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
+    
+    if product.admin_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Product is not listed under this admin, Please add this in your listing")
+    
     update_data = updated.dict(exclude_unset=True)
+
     for key, value in update_data.items():
         setattr(product, key, value)
     db.commit()
@@ -62,9 +75,13 @@ def update_product(product_id: int, updated: schemas.ProductUpdate, db: Session 
 
 @router.delete("/{product_id}")
 def delete_product(product_id: int, db: Session = Depends(get_db), current_user=Depends(require_roles([UserRole.admin]))):
+    
     product = db.query(models.Product).filter(models.Product.id == product_id).first()
+    
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
+    if product.admin_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Product is not listed under this admin, Please add this in your listing")
     db.delete(product)
     db.commit()
     return {"message": "Product deleted successfully"}

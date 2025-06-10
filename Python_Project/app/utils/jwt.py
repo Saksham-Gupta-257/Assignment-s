@@ -1,17 +1,15 @@
 from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
-import os
-from dotenv import load_dotenv
 from typing import Optional
 from fastapi import HTTPException
+from app.core.config import settings
 
-load_dotenv()
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
-# ACCESS_TOKEN_EXPIRE_SECONDS = int(os.getenv("ACCESS_TOKEN_EXPIRE_SECONDS"))
-REFRESH_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+# ACCESS_TOKEN_EXPIRE_SECONDS = settings.ACCESS_TOKEN_EXPIRE_SECONDS
+REFRESH_EXPIRE_DAYS = settings.REFRESH_TOKEN_EXPIRE_DAYS
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()

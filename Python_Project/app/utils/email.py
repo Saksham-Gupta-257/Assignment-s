@@ -1,15 +1,12 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import os
-from dotenv import load_dotenv
+from app.core.config import settings
 
-load_dotenv()
-
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT"))
-EMAIL_USER = os.getenv("EMAIL_USER")
-EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+EMAIL_HOST = settings.EMAIL_HOST
+EMAIL_PORT = settings.EMAIL_PORT
+EMAIL_USER = settings.EMAIL_USER
+EMAIL_PASSWORD = settings.EMAIL_PASSWORD
 
 def send_email(to_email: str, subject: str, body: str):
     msg = MIMEMultipart()

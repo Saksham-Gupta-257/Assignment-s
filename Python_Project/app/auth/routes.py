@@ -12,10 +12,8 @@ from datetime import datetime
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-# Create tables
 Base.metadata.create_all(bind=engine)
 
-# Dependency
 def get_db():
     db = SessionLocal()
     try:
