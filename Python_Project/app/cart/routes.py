@@ -21,7 +21,7 @@ def get_db():
 
 @router.post("/", response_model=schemas.CartItemOut)
 def add_to_cart(cart_item: schemas.CartItemCreate, db: Session = Depends(get_db), current_user=Depends(require_roles([UserRole.user]))):
-    existing_procuct = db.query(models.Product).filter(models.Product.id == cart_item.product_id).first()
+    existing_procuct = db.query(product_models.Product).filter(product_models.Product.id == cart_item.product_id).first()
     if not existing_procuct:
         raise HTTPException(status_code=404, detail="Product not found")
     

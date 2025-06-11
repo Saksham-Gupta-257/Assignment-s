@@ -14,5 +14,5 @@ class Product(Base):
     category_id = Column(Integer, nullable=False)
     image_url = Column(String, nullable=True)
 
-    cart_items = relationship("Cart", back_populates="product", cascade="all")
+    cart_items = relationship("Cart", back_populates="product", cascade="all, delete-orphan")
     admin = relationship("User", back_populates="product")

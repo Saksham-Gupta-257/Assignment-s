@@ -1,13 +1,10 @@
-from fastapi import APIRouter, HTTPException, Depends, Response
+from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from app.core.database import SessionLocal, engine, Base
+from app.core.database import SessionLocal
 from app.products import models, schemas
-from app.middlewares.dependencies import require_roles
-from app.auth.models import UserRole
 from fastapi_pagination import Page, Params
 from fastapi_pagination.ext.sqlalchemy import paginate
 import math
-from typing import Optional
 
 router = APIRouter(prefix="/products", tags=["products"])
 
